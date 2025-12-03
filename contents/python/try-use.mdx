@@ -1,0 +1,40 @@
+---
+title: 浅尝下
+---
+python 有两种使用方式，交互式解释器 和 命令行脚本！
+
+前者一般多为临时使用，如学习、测试，而后者才是主流使用方式！
+
+## 交互式命令行
+
+双击桌面 Python 应用图标 或者 在终端中输入 `py` 或者 `python3`并回车，既启动Python解释器：：
+
+![](https://img.dingshaohua.com/doc-python/use-by-terminal-20251203205451.webp)
+
+按下 `control + d` 可退出此模式！
+
+## 命令行脚本
+
+命令行脚本是最常用的方式，即 py+你的脚本路径，比如我有个名为  `first_demo.py`
+
+```python
+# first_demo.py 代码如下
+
+a=1
+b=2
+print(a+b)
+```
+
+终端输入  `py first_demo.py` 或者 `python3 first_demo.py`回车执行，即可看到脚本执行结果（也是解释器在底层工作，这种方式可以执行文件内所有的 python 代码，方便而已）！
+
+## 编辑器
+
+在实际开发中（一般我们是使用编辑器开发），无论是交互模式，还是命令行方式都不太方便，毕竟需要频繁的执行！
+
+在vsCode中，我们可以安装插件来解决这个问题
+
+![](https://img.dingshaohua.com/doc-python/plugin-for-vscode-20251203205451.png)
+
+安装完成后，编辑器右上角会多出一个三角形按钮，点击即可直接运行！
+
+![](https://img.dingshaohua.com/doc-python/use-by-vscode-20251203205451.webp)
