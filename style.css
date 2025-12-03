@@ -3,10 +3,5 @@ html, body {
   scroll-behavior: smooth;
 }
 .nav-logo{
-    zoom: 1.8;
-}
-
-/* 首页隐藏 navbar（通过 CSS 立即生效，避免闪烁） */
-html[data-page-mode="custom"] #navbar {
-  display: none !important;
+    zoom: 1.6;
 }

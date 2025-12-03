@@ -4,20 +4,25 @@ description: 爱学习的丁 - 技术文档
 mode: custom
 ---
 
-<div className="fixed inset-0 z-[9999] bg-white dark:bg-[#0f1117] flex flex-col items-center justify-center text-center px-4">
-  <img
-    className="w-32 h-32 mb-6"
-    src="/logo/logo.svg"
-    alt="Logo"
-  />
+<div id="home-overlay" className="fixed inset-0 z-[9999] bg-gradient-to-br from-white via-gray-50 to-emerald-50 dark:from-[#0f1117] dark:via-[#131620] dark:to-[#0f1117] flex flex-col items-center justify-center text-center px-6">
 
-  <h1 className="text-4xl font-bold mb-4">欢迎来到</h1>
+  <div className="mb-8 p-4 rounded-full bg-white dark:bg-gray-800 shadow-xl shadow-emerald-500/10">
+    <img
+      className="w-24 h-24"
+      src="/logo/logo.svg"
+      alt="Logo"
+    />
+  </div>
 
-  <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl">
-    爱学习的丁的笔记，记录学习的点点滴滴。
+  <h1 className="text-5xl font-bold mb-3 bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
+    爱学习的丁
+  </h1>
+
+  <p className="text-xl text-gray-500 dark:text-gray-400 mb-10 max-w-xl">
+    记录学习的点点滴滴 ✨
   </p>
 
-  <CardGroup cols={2}>
+  <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4">
     <Card
       title="Python 教程"
       icon="python"
@@ -25,5 +30,5 @@ mode: custom
     >
       从零开始学习 Python 编程
     </Card>
-  </CardGroup>
+  </div>
 </div>

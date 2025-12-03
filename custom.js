@@ -118,10 +118,23 @@
     });
   }
 
+  // 处理首页覆盖层（离开首页时隐藏）
+  function handleHomeOverlay() {
+    const overlay = document.getElementById('home-overlay');
+    console.log(overlay);
+    
+    if (!overlay) return;
+
+    const path = window.location.pathname;
+    const isHome = path === '/' || path === '/index' || path === '/index.html';
+    overlay.style.display = isHome ? '' : 'none';
+  }
+
   // 执行所有自定义操作
   function applyCustomizations() {
     replaceBranding();
     translateUI();
+    // handleHomeOverlay();
     // 翻译完成后添加 ready 类，触发显示
     document.documentElement.classList.add('i18n-ready');
   }
@@ -137,7 +150,7 @@
   let timeout;
   const observer = new MutationObserver(() => {
     clearTimeout(timeout);
-    timeout = setTimeout(applyCustomizations, 50); // 缩短延迟
+    timeout = setTimeout(applyCustomizations,0); // 缩短延迟
   });
   observer.observe(document.body, { childList: true, subtree: true });
 })();
