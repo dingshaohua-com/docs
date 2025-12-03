@@ -37,10 +37,10 @@
            {
             "group": "插件-Pytest",
             "pages": [
-              "contents/python/pytest",
-              "contents/python/autorun",
-              "contents/python/fixture",
-              "contents/python/mark"
+              "contents/python/pytest/index",
+              "contents/python/pytest/autorun",
+              "contents/python/pytest/fixture",
+              "contents/python/pytest/mark"
              
             ]
           }
