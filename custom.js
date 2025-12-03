@@ -4,10 +4,6 @@
   const style = document.createElement('style');
   style.id = 'i18n-hide-style';
   style.textContent = `
-    /* 首页隐藏 navbar */
-    html[data-page-mode="custom"] #navbar {
-      display: none !important;
-    }
     /* 隐藏需要翻译的 UI 元素 */
     #search-bar-entry,
     #search-bar-entry-mobile,
