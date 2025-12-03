@@ -122,6 +122,8 @@
   function applyCustomizations() {
     replaceBranding();
     translateUI();
+    // 翻译完成后添加 ready 类，触发显示
+    document.documentElement.classList.add('i18n-ready');
   }
 
   // 页面加载后执行
@@ -135,7 +137,7 @@
   let timeout;
   const observer = new MutationObserver(() => {
     clearTimeout(timeout);
-    timeout = setTimeout(applyCustomizations, 100);
+    timeout = setTimeout(applyCustomizations, 50); // 缩短延迟
   });
   observer.observe(document.body, { childList: true, subtree: true });
 })();
