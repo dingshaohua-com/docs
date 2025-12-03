@@ -1,0 +1,379 @@
+---
+title: 数据类型
+---
+
+**数据类型确实是最基础语法**！参数/返回值/变量**都涉及类型**，是编程**核心**。
+
+在 python 中，类型属于对象，变量是没有类型的：
+
+```python
+a=[1,2,3]
+a="hello"
+```
+
+以上代码中，**[1,2,3]** 是 List 类型，**"**hello**"** 是 str类型，而变量 a 是没有类型，她仅仅是一个对象的引用（一个指针），可以是 List 类型对象，也可以指向 str 类型对象，在运行时确定对象！
+
+所以`type(a)`其实是用来获取a这个变量当前的值的类型，而不是变量a这个key的类型！
+
+这个表现和JS一致，和Java相悖，这就是动态类型和静态类型的最大差别！
+
+## 内置类型
+
+Python 定义7个标准的数据类型，用于存储各种类型的数据。
+
+- Numbers（数字）
+- String（字符串）
+- Bool（布尔）
+- List（列表）
+- Tuple（元组）
+- Dictionary（字典）
+- Set/Frozenset（集合）
+
+## **判断检测**
+
+Python如何检测数据类型是什么呢，其实Python内置了type函数，可用于检测为何种数据类型！
+
+```python
+a=1
+print(type(a)) # 输出为int类型
+```
+
+## **动态推导出类型**
+
+和JAVA不同（和JS相同），Python并不需要你在代码运行前手动指定数据类型（用于在静态编译时）。Python会在运行时自动根据你的变量值去推导出数据类型（鸭子typing）！
+
+```python
+# 在java中（显示的在左侧标记为字符串类型）
+string a = 'hello';
+# 在python（不需要显示声明，python会自动根据值类型去推导，更智能）
+a = 'hello'
+```
+
+动态类型最大的特点就是类型不是固定的，是可以在运行时改变的
+
+```python
+# python动态类型（运行时检查，变量类型随意换）
+a=1
+print(type(a)) # 打印：数字类型
+a='hello'
+print(type(a)) # 打印：字符串类型
+
+# java静态类型（编译时检查，类型固定）
+int a = 1;
+a = "hello"; # 报错，a为数字类型不能赋值字符串
+```
+
+## **一切皆对象**
+
+Python中所有的数据类型都是对象（并无传统语言中的基本类型和引用类型之分，因为全是引用类型，即都是对象）。
+
+```python
+a = 1
+b = a  # 引用拷贝 id 相同
+print(f"a的内存地址{hex(id(a))} === b的内存地址{hex(id(b))}")  # 共享
+# 输出：a的内存地址0x7ffc6455a478 === b的内存地址0x7ffc6455a478
+```
+
+## **两大分类**
+
+在Python编程语言中，数据类型分为两大类：可变数据类型Mutable Types 和 不可变数据类型Immutable Types。
+
+### **不可变数据类型**
+
+不可变数据类型指的是一旦创建后，其值就不能被改变的数据类型。这意味着，如果你尝试修改一个不可变对象的值，实际上是创建了一个新的对象。Python中的不可变数据类型包括：
+
+```python
+数字类型：例如，x = 10，如果你尝试改变x的值，如x = 20，实际上是创建了一个新的数字类型的对象
+布尔数据类型：例子和上边一样
+字符串：例如，s = "hello"，如果你尝试修改s，如s[0] = 'H'，这是不允许的，因为字符串是不可变的
+元组：例如，t = (1, 2, 3)，你不能改变元组中的元素，如t[0] = 4，这是非法的
+冻结集合：这是集合的不可变版本，一旦创建，其元素不能被修改
+```
+
+举一个例子来验证不可变性（会发现竟和传统语言的基本类型值拷贝效果一样，b的值均不受影响）
+
+```python
+a = 1
+b = a  # 引用拷贝id相同
+a=2 # a会被定义为新对象 和 b不再相同
+print(f"a的内存地址{hex(id(a))} !== b的内存地址{hex(id(b))}")
+# 输出：a的内存地址0x7ffc6455a498 !== b的内存地址0x7ffc6455a478
+print(f"a的值为{a} !== b的值为{b}") 
+# 输出：a的值为2 !== b的值为1
+```
+
+### **可变数据类型**
+
+可变数据类型指的是创建后，其值可以被改变的数据类型。这意味着，你可以直接修改对象的内容，而不需要创建一个新的对象。Python中的可变数据类型包括：
+
+```python
+列表（list）：例如，lst = [1, 2, 3]，你可以通过索引修改列表中的元素，如lst[0] = 4。
+字典（dict）：例如，dct = {'a': 1, 'b': 2}，你可以添加、删除或修改字典中的键值对。
+集合（set）：例如，st = {1, 2, 3}，你可以添加或删除集合中的元素。
+自定义类对象：若你创建了自定义的类，这个类的实例也是可变的。
+```
+
+举一个例子来验证可变性：虽然内存地址没变，但是love的值内容已经变化了
+
+```python
+love=['看电视','爬山','游泳']
+print(f"修改前的值为 {love},地址为{hex(id(love))}")
+love.append('打游戏')
+print(f"修改后的值为 {love},地址为{hex(id(love))}")
+
+# 输出
+# 修改前的值为 ['看电视', '爬山', '游泳'],地址为0x19ce5d7b780
+# 修改后的值为 ['看电视', '爬山', '游泳', '打游戏'],地址为0x19ce5d7b780
+```
+
+因为python中一切皆对象，所以myLove和youLove 实际上指向的同一个（值的）内存地址，该其中一个，另一也会受影响（因为不可变数据类型不存在改值得情况，因为该值其实就是重新定义了新的，所以不会有这个表现）
+
+```python
+myLove=['看电视','爬山','游泳']
+youLove = myLove
+myLove.append('打游戏')
+print(f"myLove的值为 {myLove},youLove的值为{youLove}")
+```
+
+## 类型详解
+
+### 数字
+
+数字数据类型用于存储数值，比如 `a=1`
+
+Python支持四种不同的数字类型：
+
+- int（有符号整型，即普通整数）
+- long（长整型，即很长的整数）
+- float（浮点型，即小数）
+- complex（复数）
+
+数字也内置了几个方法或属性，但是都不常用，每必要学习。反而是Python内置的几个数学相关的函数比较常用（python内置了很多全局函数）。
+
+```python
+abs(x)	返回数字的绝对值，如abs(-10) 返回 10
+ceil(x)	返回数字的上入整数，如math.ceil(4.1) 返回 5
+max(x1, x2,...)	返回给定参数的最大值，参数可以为序列。
+min(x1, x2,...)	返回给定参数的最小值，参数可以为序列。
+...
+```
+
+### 字符串
+
+字符串是由数字、字母、下划线组成的一串字符构成，比如 `a='hello'`
+
+获取字符串内容也有多种方式
+
+```python
+str = 'Hello World!'
+ 
+print(str)           # 输出完整字符串
+print(str[0])        # 输出字符串中的第一个字符
+print(str[2:5])      # 输出字符串中第三个至第六个之间的字符串
+print(str[2:])       # 输出从第三个字符开始的字符串
+print(str * 2)       # 输出字符串两次
+print(str + "TEST")  # 输出连接的字符串
+```
+
+另外字符串还[内置了很多方法](https://docs.python.org/zh-cn/3.14/library/stdtypes.html#string-methods)供我们使用，比如
+
+```python
+str = 'Hello World'
+ 
+print(str.endswith('World'))  # 是否以World结尾
+print(str.replace('World', 'Python')) # 替换World为Python
+...
+```
+
+### **布尔**
+
+[`bool`](https://docs.python.org/zh-cn/3.14/library/functions.html#bool) 是 [`int`](https://docs.python.org/zh-cn/3.14/library/functions.html#int) 的子类， [`bool`](https://docs.python.org/zh-cn/3.14/library/functions.html#bool) 类型只有两个常量实例: `True` 和 `False`，用来表示对和错！
+
+内置函数 [`bool()`](https://docs.python.org/zh-cn/3.14/library/functions.html#bool) 可将任意值转换为布尔值。
+
+多用于逻辑运算！
+
+### 列表
+
+列表就像你的**购物篮**！
+
+- 可以**随时放东西进去**（苹果、香蕉、牛奶）。
+- **东西可以重复**（多买几个苹果）。
+- **有顺序**：第一个放的在最前面（位置从0开始数）。
+- **大小自动变**：篮子满了自动变大！
+- **东西可以不同**：水果+饮料+书都行！
+
+**一句话**：**列表是Python里最常用“篮子”，放东西有序、可改、可重复**！
+
+```python
+# 你的初始购物篮（混合东西：字符串+数字，Python超灵活！）
+shopping_cart = ['苹果', '橘子', 2025, 12]
+print("=== 初始购物篮 ===")
+print(shopping_cart)  # ['苹果', '橘子', 2025, 12]
+print(f"总共 {len(shopping_cart)} 样东西")
+
+# 1. 查（Read）：看东西！
+print("\n=== 1. 查（超级简单） ===")
+print(f"第1个（位置0）: {shopping_cart[0]} → 苹果")  # 正索引
+print(f"最后一个（-1）: {shopping_cart[-1]} → 12")     # 负索引神招
+print("'苹果'在篮子吗？", '苹果' in shopping_cart)      # in检查 True
+
+# 2. 增（Add）：加新东西！
+print("\n=== 2. 增（篮子自动变大） ===")
+shopping_cart.append('香蕉')      # 加到最后
+print("加'香蕉'后:", shopping_cart)  # ['苹果', '橘子', 2025, 12, '香蕉']
+shopping_cart.insert(1, '梨')      # 加到第2个位置（位置1）
+print("加'梨'后:", shopping_cart)   # ['苹果', '梨', '橘子', 2025, 12, '香蕉']
+
+# 3. 改（Update）：换东西！
+print("\n=== 3. 改（直接换） ===")
+shopping_cart[3] = 24              # 把2025改成24（数量？）
+print("改数量后:", shopping_cart)   # ['苹果', '梨', '橘子', 24, 12, '香蕉']
+
+# 4. 删（Delete）：扔掉不要的！
+print("\n=== 4. 删（多种方式） ===")
+shopping_cart.pop()                # 删最后一个（香蕉bye）
+print("pop最后1个后:", shopping_cart)  # ['苹果', '梨', '橘子', 24, 12]
+shopping_cart.remove('梨')         # 删指定“梨”（只删第一个）
+print("remove'梨'后:", shopping_cart)  # ['苹果', '橘子', 24, 12]
+# del shopping_cart[2] #删除指定的某个元素
+
+# 最终结账
+print("\n=== 最终购物篮（结账！） ===")
+print(shopping_cart)
+print(f"总价估算: {sum(shopping_cart[-2:])} 元")  # 24+12=36（数字部分）
+```
+
+初此之外，列表还有其他很多方法，比如
+
+```python
+list.count(obj)
+统计某个元素在列表中出现的次数
+list.extend(seq)
+在列表末尾一次性追加另一个序列中的多个值（用新列表扩展原来的列表）
+list.index(obj)
+从列表中找出某个值第一个匹配项的索引位置
+list.reverse()
+反向列表中元素
+list.sort(cmp=None, key=None, reverse=False)
+对原列表进行排序
+```
+
+最后，python也有几个相关的内置方法
+
+```python
+cmp(list1, list2)
+比较两个列表的元素
+len(list)
+列表元素个数
+max(list)
+返回列表元素最大值
+min(list)
+返回列表元素最小值
+list(seq)
+将元组转换为列表
+```
+
+### 元组
+
+Python 的元组与列表类似，不同之处在于元组的元素不能修改。
+
+元组使用小括号，列表使用方括号。
+
+```python
+tup1 = ('physics', 'chemistry', 1997, 2000)
+```
+
+### 字典
+
+字典相当于Java的Map、Js的对象。
+
+就是一堆键值对：`teacher = {'name': '张三', 'age': 26}`
+
+键一般是唯一的，如果重复最后的一个键值对会替换前面的，值不需要唯一。
+
+操作字典的常用方式
+
+```python
+# 你的初始老师名片
+teacher = {'name': '张三', 'age': 26}
+print("=== 初始老师名片 ===")
+print(teacher)  # {'name': '张三', 'age': 26}
+print(f"有 {len(teacher)} 个信息")
+
+# 1. 访问（Get/Read）：查信息！
+print("\n=== 1. 访问（查名字/年龄） ===")
+print(f"名字: {teacher['name']} → 张三")       # 直接键访问
+print(f"年龄: {teacher.get('age')} → 26")       # get()安全（键不存在不报错）
+print("'name'键存在吗？", 'name' in teacher)     # in检查键 True
+print("所有键:", list(teacher.keys()))          # ['name', 'age']
+print("所有值:", list(teacher.values()))         # ['张三', 26]
+print("键值对:", list(teacher.items()))          # [('name', '张三'), ('age', 26)]
+
+# 2. 修改（Update）：换信息！
+print("\n=== 2. 修改（老师升职啦！） ===")
+teacher['name'] = '李四'           # 直接改现有键
+print("改名字后:", teacher)        # {'name': '李四', 'age': 26}
+teacher['age'] = 28                # 改年龄
+teacher.update({'school': '北大', 'salary': 10000})  # 批量加/改多个
+print("加学校+工资后:", teacher)   # {'name': '李四', 'age': 28, 'school': '北大', 'salary': 10000}
+
+# 3. 删除（Delete）：删信息！
+print("\n=== 3. 删除（保密工资！） ===")
+del teacher['salary']              # del删指定键（报错如果不存在）
+print("del工资后:", teacher)       # {'name': '李四', 'age': 28, 'school': '北大'}
+teacher.pop('age')                 # pop删并返回被删值（28）
+print("pop年龄后:", teacher)       # {'name': '李四', 'school': '北大'}
+# teacher.clear()  # 清空所有（注释掉，避免空名片）
+
+# 最终名片
+print("\n=== 最终老师名片 ===")
+print(teacher)
+
+```
+
+### Set
+
+set 是由具有唯一性的元素所组成的无序多项，最大的特性是自动去重。
+
+```python
+
+# 1. 初始化：水果抽屉（自动去重）
+水果抽屉 = {'苹果', '香蕉', '苹果', '橙子'}  # 输入重复→自动{'苹果','香蕉','橙子'}
+print("初始抽屉:", 水果抽屉)
+print("大小:", len(水果抽屉))  # 3
+
+# 2. 查：苹果在吗？
+print("苹果存在？", '苹果' in 水果抽屉)      # True
+print("遍历全览:")
+for 水果 in 水果抽屉:
+    print("  -", 水果)
+
+# 3. 增：加西瓜
+水果抽屉.add('西瓜')
+print("增后:", 水果抽屉)  # {'苹果','香蕉','橙子','西瓜'}
+
+# 4. 改：香蕉→葡萄（删旧+加新）
+水果抽屉.remove('香蕉')      # 删旧
+水果抽屉.add('葡萄')         # 加新
+print("改后:", 水果抽屉)     # {'苹果','橙子','西瓜','葡萄'}
+
+# 5. 删：多种删法
+水果抽屉.discard('不存在')    # 安全删（无错）
+水果抽屉.remove('橙子')      # 精确删（不存在报错）
+随机删 = 水果抽屉.pop()      # 随机pop一个，返回它
+print("随机删:", 随机删)      # 如'苹果'
+水果抽屉.clear()             # 全空
+print("清空后:", 水果抽屉)   # set()
+
+```
+
+## 数据结构
+
+[数据结构](https://docs.python.org/zh-cn/3/tutorial/datastructures.html)就是“数据的收纳箱”，是组织和存储数据的方式。可以帮助我们高效地访问、插入、删除和更新数据。 数据结构=序列类型（Sequence） + 集合类型（Set） + 映射类型（Mapping），3大类9小家！总结：Python数据结构=序列（有序索引） + 集合（去重无序） + 映射（键值快查），总9容器相关（序列6+集合2+映射1）
+
+集合类型有set和frozenset
+
+[序列类型](https://docs.python.org/zh-cn/3.14/library/stdtypes.html#sequence-types-list-tuple-range)是Python中最基本的数据结构，支持索引（从0开始）。Python有6个内置序列：list/tuple/range/str/bytes/bytearray，最常用list和tuple。
+
+ 映射类型有dict

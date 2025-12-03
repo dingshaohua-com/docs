@@ -24,7 +24,9 @@
           {
             "group": "基础语法",
             "pages": [
-              "contents/python/variable"
+              "contents/python/variable",
+              "contents/python/data-type",
+              "contents/python/statement"
             ]
           }
          
