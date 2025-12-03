@@ -1,3 +1,7 @@
+/* 在html或body元素上设置 */
+html, body {
+  scroll-behavior: smooth;
+}
 .nav-logo{
     zoom: 1.8;
 }

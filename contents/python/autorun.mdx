@@ -1,0 +1,68 @@
+---
+title: 自动运行
+---
+
+**pytest 会自动找到了所有 `test_` 开头的函数并执行了它们！**
+
+不需要手动调用！
+
+```tsx
+pytest some.py
+```
+
+ 但是会隐藏输入，即便你代码内有 print 也不会在控制台看到，除非你
+
+```tsx
+pytest some.py -s
+```
+
+同时也会自动执行 TestXxx 开头的 class 里的 test_xxx方法
+
+```tsx
+class TestCalculator:
+    def abc(self):
+        print("我名称没有 test 开头，不会被调用")
+    def test_add(self):
+        print("执行加法测试用例了")
+```
+
+另外，测试类，会默认提供两个钩子方法，用户执行前后的操作
+
+```tsx
+class TestAnswerSheetCreate:
+    """答题卡创建接口测试"""
+    
+    # 类变量，用于存储创建的答题卡ID，便于后续清理
+    created_sheet_ids = []
+    
+    def setup_class(self):
+        """测试类初始化"""
+        print("\n开始执行答题卡创建接口测试")
+    
+    def teardown_class(self):
+        """测试类清理 - 删除测试过程中创建的答题卡"""
+        print(f"\n清理测试数据：删除 {len(self.created_sheet_ids)} 个答题卡")
+        for sheet_id in self.created_sheet_ids:
+            try:
+                teacher_res_service.delete_answer_sheet(sheet_id)
+                print(f"已删除答题卡: {sheet_id}")
+            except Exception as e:
+                print(f"删除答题卡失败 {sheet_id}: {e}")
+```
+
+偷懒版本
+
+直接点击vscode右上角这个按钮 就会运行 pyhton3 ./current.py ，不过需要额外配置
+
+```tsx
+import pytest
+
+def test_demo():
+    print('执行啦')
+    assert True
+
+# 运行测试的主入口（可选）
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "-s"])
+     
+```

@@ -26,7 +26,22 @@
             "pages": [
               "contents/python/variable",
               "contents/python/data-type",
-              "contents/python/statement"
+              "contents/python/statement",
+              "contents/python/function",
+               "contents/python/oop",
+              "contents/python/module",
+              "contents/python/venv"
+             
+            ]
+          },
+           {
+            "group": "插件-Pytest",
+            "pages": [
+              "contents/python/pytest",
+              "contents/python/autorun",
+              "contents/python/fixture",
+              "contents/python/mark"
+             
             ]
           }
          

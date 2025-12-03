@@ -1,0 +1,139 @@
+---
+title: 输入/出
+---
+
+## 输出
+
+print 是内置的输出到控制台的方法，以下展示格式化方式
+
+```python
+print('{0} 和 {1}'.format('Google', 'Baidu'))
+# 输出：Google 和 Baidu
+
+print('{name}网址-{site}'.format(name='百度', site='baidu.com'))
+# 输出：百度网址-baidu.com
+
+print('%(name)s网址： %(site)s' % {'name': '百度', 'site': 'baidu.com'})
+# 字典传参
+
+print('%s网址： %s' % ('百度', 'baidu.com'))
+# 元组传参
+
+teacher = {'name': '张三', 'age': 26}
+print(f"姓名：{teacher['name']}，年龄：{teacher['age']}")
+```
+
+## 输入
+
+**读取键盘输入**
+
+Python 提供了 [input() 内置函数](https://www.runoob.com/python3/python3-func-input.html) 从标准输入（键盘）读入一行文本。
+
+```python
+str = input("请输入：");
+print ("你输入的内容是: ", str)
+```
+
+## 读写文件 io
+
+读取
+
+```python
+# 打开一个文件
+file = open("./tmp.txt", "r")
+
+# 读取内容
+str = file.read()
+print(str)
+
+# 关闭打开的文件（释放系统的资源）
+file.close()
+```
+
+写入
+
+会在文件的末尾追加内容！
+
+```python
+# 打开一个文件
+f = open("./tmp.txt", "w")
+
+f.write( "Python 是一个非常好的语言。\n是的，的确非常好!!\n" )
+
+# 关闭打开的文件
+f.close()
+```
+
+读和写
+
+```python
+# 打开一个文件
+f = open("./tmp.txt", "r+")
+
+# 1. 读取原始内容
+print("--- 第一次读取 ---")
+old_str = f.read()
+print(old_str)
+
+# 2. 写入新内容（此时光标在旧文件末尾，追加写入）
+f.write( "Python 是一个非常好的语言。\n是的，的确非常好!!\n" )
+
+# 3. 把光标移动到文件开头 （f.tell() 可获取当前光标位置）
+f.seek(0) 
+
+# 4. 再次读取（现在能读到 全部 内容了）
+print("--- 第二次读取 ---")
+new_str = f.read()
+print(new_str)
+
+# 关闭打开的文件
+f.close()
+
+# 输出如下：
+# --- 第一次读取 ---
+# 你好，世界！
+
+# --- 第二次读取 ---
+# 你好，世界！
+# Python 是一个非常好的语言。
+# 是的，的确非常好!!
+```
+
+`open(filename, mode)` 参数解释
+
+- filename：包含了你要访问的文件名称的字符串值。
+- mode：决定了[打开文件的模式](https://www.runoob.com/python3/python3-file-methods.html)：只读，写入，追加等。所有可取值见如下的完全列表。这个参数是非强制的，默认文件访问模式为只读(r)。
+
+无论哪种模式打开，光标（指针）默认都在首位。
+
+file 文件对象 有哪些方法？
+
+| 序号 | 方法及描述 |
+| --- | --- |
+| 1 | [file.close()](https://www.runoob.com/python3/python3-file-close.html)
+关闭文件。关闭后文件不能再进行读写操作。 |
+| 2 | [file.flush()](https://www.runoob.com/python3/python3-file-flush.html)
+刷新文件内部缓冲，直接把内部缓冲区的数据立刻写入文件, 而不是被动的等待输出缓冲区写入。 |
+| 3 | [file.fileno()](https://www.runoob.com/python3/python3-file-fileno.html)
+返回一个整型的文件描述符(file descriptor FD 整型), 可以用在如os模块的read方法等一些底层操作上。 |
+| 4 | [file.isatty()](https://www.runoob.com/python3/python3-file-isatty.html)
+如果文件连接到一个终端设备返回 True，否则返回 False。 |
+| 5 | [file.next()](https://www.runoob.com/python3/python3-file-next.html)
+**Python 3 中的 File 对象不支持 next() 方法。**
+返回文件下一行。 |
+| 6 | [file.read([size])](https://www.runoob.com/python3/python3-file-read.html)
+从文件读取指定的字节数，如果未给定或为负则读取所有。 |
+| 7 | [file.readline([size])](https://www.runoob.com/python3/python3-file-readline.html)
+读取整行，包括 "\n" 字符。 |
+| 8 | [file.readlines([sizeint])](https://www.runoob.com/python3/python3-file-readlines.html)
+读取所有行并返回列表，若给定sizeint>0，返回总和大约为sizeint字节的行, 实际读取值可能比 sizeint 较大, 因为需要填充缓冲区。 |
+| 9 | [file.seek(offset[, whence])](https://www.runoob.com/python3/python3-file-seek.html)
+移动文件读取指针到指定位置 |
+| 10 | [file.tell()](https://www.runoob.com/python3/python3-file-tell.html)
+返回文件当前位置。 |
+| 11 | [file.truncate([size])](https://www.runoob.com/python3/python3-file-truncate.html)
+从文件的首行首字符开始截断，截断文件为 size 个字符，无 size 表示从当前位置截断；截断之后后面的所有字符被删除，其中 windows 系统下的换行代表2个字符大小。 |
+| 12 | [file.write(str)](https://www.runoob.com/python3/python3-file-write.html)
+将字符串写入文件，返回的是写入的字符长度。 |
+| 13 | [file.writelines(sequence)](https://www.runoob.com/python3/python3-file-writelines.html)
+向文件写入一个序列字符串列表，如果需要换行则要自己加入每行的换行符。 |

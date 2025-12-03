@@ -1,0 +1,88 @@
+---
+title: 错误
+---
+
+## 错误
+
+错误通常指的是语法错误，比如我定义方法的时候，少写了冒号
+
+```python
+def test()
+    print("Hello, World!")
+    
+# 运行就会报错
+# File "py-demo/one.py", line 1
+#    def test()
+              ^
+# SyntaxError: expected ':'
+```
+
+## 异常
+
+即便 Python 程序的语法是正确的，在运行它的时候，也有可能发生错误。运行期检测到的错误被称为异常。异常以不同的类型出现，会输出在错误信息中
+
+```python
+a = 1/0
+# 运行就会报错，0不能作为除数
+# Traceback (most recent call last):
+#   File "py-demo/one.py", line 1, in <module>
+#     a = 1/0
+#         ~^~
+# ZeroDivisionError: division by zero
+```
+
+### 捕获异常
+
+遇到异常，程序则会立刻终止执行，并输出异常信息。
+
+这显然不是我们想要的，哪怕后续没有程序需要执行了，我们也需要给用户一个更友好的异常提示
+
+Python 提供了 `try/except` 来捕获处理异常
+
+```python
+try:
+    a = 1/0
+except ZeroDivisionError:
+    print("你犯错了，除数怎么能是0呢")
+```
+
+try-finally 语句，无论有没有发生异常，最终都会执行
+
+### 手动制造异常
+
+```python
+x = 10
+if x > 5:
+    raise Exception('x 不能大于 5。x 的值为: {}'.format(x))
+```
+
+### 断言与异常
+
+Python assert（断言）用于判断一个表达式，在表达式条件为 false 的时候触发异常。
+
+```python
+assert 1>2
+# 运行将会抛出异常
+# Traceback (most recent call last):
+#   File "py-demo/one.py", line 1, in <module>
+#     assert 1>2
+#            ^^^
+# AssertionError
+```
+
+### **自定义异常**
+
+你可以通过创建一个新的异常类来拥有自己的异常，异常类继承自 Exception 类
+
+```python
+class MyError(Exception):
+        def __init__(self, value):
+            self.value = value
+        def __str__(self):
+            return repr(self.value)
+
+try:
+    raise MyError(2*2)
+except MyError as e:
+    print('My exception occurred, value:', e.value)
+```

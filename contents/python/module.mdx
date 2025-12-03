@@ -1,0 +1,110 @@
+---
+title: 模块
+---
+
+用 python 解释器来编程，若从解释器退出再进入，那么你定义的所有的方法和变量就都消失了。
+
+为此 Python 提供了一个办法，把这些定义存放在文件中，为一些脚本或者交互式的解释器实例使用，这个文件被称为模块，既 pyhton 中一个文件就是一个模块（和 js与 java相同）。
+
+也就是说，在第三章中”命令行脚本”的方式，已经接触到了模块，只不过当时还没介绍这个概念！
+
+## **模块的作用**
+
+- **代码复用**：将常用的功能封装到模块中，可以在多个程序中重复使用。
+- **命名空间管理**：模块可以避免命名冲突，不同模块中的同名函数或变量不会互相干扰。
+- **代码组织**：将代码按功能划分到不同的模块中，使程序结构更清晰。
+
+## 定义和使用
+
+```python
+# calculator.py
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+```
+
+我们通过导入 `import`，来使用计算器这个模块
+
+```python
+# test.py
+import calculator
+
+sum = calculator.add(1, 2)
+print(sum)
+```
+
+当导入一个模块时，Python 会按照以下顺序查找模块：
+
+1. 当前目录。
+2. 环境变量 `PYTHONPATH` 指定的目录。
+3. Python 标准库目录。
+4. `.pth` 文件中指定的目录。
+
+`from modname import xx`   语句：导入一个指定的部分内容到当前文件中
+
+```python
+from calculator import add
+
+sum = add(1, 2)
+print(sum)
+```
+
+## 内置模块
+
+Python 本身带着一些标准的模块库，这些你可以直接导入使用
+
+| 模块名 | 功能描述 |
+| --- | --- |
+| `math` | 数学运算（如平方根、三角函数等） |
+| `os` | 操作系统相关功能（如文件、目录操作） |
+| `sys` | 系统相关的参数和函数 |
+| `random` | 生成随机数 |
+| `datetime` | 处理日期和时间 |
+| `json` | 处理 JSON 数据 |
+| `re` | 正则表达式操作 |
+| `collections` | 提供额外的数据结构（如 defaultdict、deque） |
+| `itertools` | 提供迭代器工具 |
+| `functools` | 高阶函数工具（如 reduce、lru_cache） |
+
+## 包
+
+包是一种管理 Python 模块命名空间的形式，采用 `包名.文件名`。
+
+目的也是为了更好的模块化！
+
+（必须有 `__init__.py才能作为包`的规则，其实是 **Python 3.3 之前** 的旧皇历了）
+
+比如我把计算器模块，放到工具目录中 `utils/calculator.py` ，那 utils 就称之为包。导入的时候就需要做出调整了
+
+```python
+import utils.calculator as calculator
+
+sum = calculator.add(1, 2)
+print(sum)
+```
+
+另外我们还可以使用 `from package import item` 方式导入包模块
+
+```python
+from utils import calculator
+
+sum = calculator.add(1, 2)
+print(sum)
+```
+
+## **_name__ 与 __main__**
+
+平时我们经常会看到这样的 Python 代码：
+
+```python
+if __name__ == "__main__":
+    # 这里的代码只有在模块作为主程序运行时才会执行
+    main()
+```
+
+在 Python 中，__name__ 和 __main__ 是两个与模块和脚本执行相关的特殊内置变量。也就是可以直接访问它：`print(__name__)`  于表示当前模块的名称：
+
+- 当模块作为主程序运行时：__name__ 的值被设置为 "__main__"。
+- 当模块被导入时：__name__ 的值被设置为模块的文件名（不包括 .py 扩展名）。
