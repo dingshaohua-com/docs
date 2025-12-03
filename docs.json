@@ -26,12 +26,14 @@
             "pages": [
               "contents/python/variable",
               "contents/python/data-type",
+               "contents/python/operators",
               "contents/python/statement",
+              "contents/python/errors",
               "contents/python/function",
                "contents/python/oop",
               "contents/python/module",
-              "contents/python/venv"
-             
+              "contents/python/venv",
+              "contents/python/io"
             ]
           },
            {
