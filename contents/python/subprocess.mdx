@@ -3,7 +3,7 @@ title: 子进程
 ---
 
 ## 什么是子进程
-当前正在执行的程序叫做主进程，比如你运行 `python xxx.py`
+当前正在执行的程序叫做主进程，比如你运行 `python xxx.py`   
 任何进程（包括“主进程”自己）要跑外部工具（git、ffmpeg、ls等等外部程序），都必须启动一个“子进程”来跑它。
 
 比如 Node 的 child_process、java的 ProcessBuilder 等都是用于开启子进程，当然 python也内置了开启子进程方法 `subprocess`
