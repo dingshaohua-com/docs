@@ -2,13 +2,13 @@
 title: "命令行参数"
 ---
 
-command-line argument 中文 命令行参数 的意思，简写cli arg
+command-line argument 中文 命令行参数 的意思，简写 cli arg
 
 命令行参数是指： 在执行程序时，通过命令行界面传递给程序的额外信息或选项！
 
-## 使用argv获取
+## 使用 argv 获取
 
-内置的 sys 模块提供了一个argv的方法，可以获取当前执行脚本信息
+内置的 sys 模块提供了一个 argv 的方法，可以获取当前执行脚本信息
 
 ```python
 import sys
@@ -16,12 +16,12 @@ import sys
 print(sys.argv)
 
 # 输出：['.\\run-test.py', '--abc', 'prod']
-py .\run-test.py --abc prod
+py run-test.py --abc prod
 ```
 
-## 使用argparse获取
+## 使用 argparse 获取
 
-sys.argv方式获取的参数太原始和简陋了，不方便拿来即用，好在官方有提供了一个！
+sys.argv 方式获取的参数太原始和简陋了，不方便拿来即用，好在官方有提供了一个！
 
 `argparse` 是 Python 标准库里自带的**命令行参数解析库**
 
@@ -42,7 +42,7 @@ print(args.abc)
 ### 帮助
 
 当运行脚本加上 `--help` 参数时，会打印当前脚本支持的所有参数及说明（不会执行脚本内容）。\
-`--help` 这个命令参数与 `argparse` 无关，是python预知的一个参数。
+`--help` 这个命令参数与 `argparse` 无关，是 python 预知的一个参数。
 
 ```python
 from argparse import ArgumentParser
@@ -55,10 +55,33 @@ parser.add_argument('--abc', help="就是随意定义的一个参数")
 args = parser.parse_args()
 ```
 
-执行 \
-<img src="https://img.dingshaohua.com/doc-python/cli-arg-help-20251205002325.jpg" alt="" />
+![](https://img.dingshaohua.com/doc-python/cli-arg-help-20251205002325.jpg)
+
+<Note>
+  注意： `--help` 的行为是在解析参数（parse_args() / parse_known_args() /
+  parse_intermixed_args()）时 触发的。
+</Note>
+
+
 
 ### 参数说明
+
+#### description
+```python
+ArgumentParser(description='这是段示例程序，用于学习的代码')
+```
+构造参数 description 就是 帮你在执行 `--help` 输出里，写一段这个程序是干嘛的说明文字。
+```bash
+py .\run-test.py --help       
+usage: run-test.py [-h]
+
+这是段示例程序，用于学习的代码
+
+options:
+  -h, --help            show this help message and exit
+```
+
+
 
 #### action
 
@@ -78,14 +101,15 @@ parser.add_argument('--host', action='append')
 
 # store_const（存一个固定常量）
 # --mode-dev → args.mode == 'dev'，一般和 const + dest 配合，做互斥模式的快捷开关
-parser.add_argument('--mode-dev', action='store_const',const='dev', dest='mode')
+parser.add_argument('--mode-dev',
+action='store_const', const='dev', dest='mode')
 
 # count（计数）
 # -v → 1， -vv → 2， -vvv → 3
 parser.add_argument('-v', '--verbose', action='count', default=0)
 ```
 
-### default
+#### default
 
 默认值
 
@@ -95,13 +119,29 @@ args = parser.parse_args()
 print(args.abc)
 
 # 输出hello
-py .\run-test.py 
+py run-test.py
 ```
 
-### help
+#### help
 
 参数的说明文字，显示在 `--help` 输出里
 
 ```python
 parser.add_argument('--abc', default='hello', help='这就是个随意写的参数')
 ```
+
+
+#### choices
+限制参数取值范围，参数只能是这几个值里的一个，否则就报错并打印使用方式（usage） 
+```python
+from argparse import ArgumentParser
+
+# 创建一个解析器对象，用来“定义”和“解析”命令行参数
+parser = ArgumentParser()
+# color 参数的值只能是这三个之一
+parser.add_argument( "--color",choices=["red", "green", "blue"])  
+# 解析并打印
+args = parser.parse_args()
+print(args.color)
+```
+![](https://img.dingshaohua.com/doc-python/cli-arg-choice-20251205005042.jpg)

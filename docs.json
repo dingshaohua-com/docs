@@ -34,7 +34,8 @@
               "contents/python/module",
               "contents/python/venv",
               "contents/python/io",
-              "contents/python/env"
+              "contents/python/env",
+              "contents/python/cli-arg"
             ]
           },
            {
