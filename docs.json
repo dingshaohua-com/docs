@@ -33,7 +33,8 @@
                "contents/python/oop",
               "contents/python/module",
               "contents/python/venv",
-              "contents/python/io"
+              "contents/python/io",
+              "contents/python/pytest/env"
             ]
           },
            {
@@ -43,7 +44,6 @@
               "contents/python/pytest/autorun",
               "contents/python/pytest/fixture",
               "contents/python/pytest/mark"
-             
             ]
           }
          
