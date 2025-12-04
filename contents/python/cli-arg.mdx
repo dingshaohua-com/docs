@@ -51,9 +51,14 @@ print(args.abc)
 默认值为 `store`：把值存到 `args.xxx` 里。
 
 ```python
-# store_true / false 这个参数不用带值，只要写上这个选项就变成 True/False
+# store_true / false （这个参数不用带值，只要写上这个选项就变成 True/False）
 # 默认 args.debug == False，加上 --debug → True
 parser.add_argument('--debug', action='store_true')
 # 默认 True，加上 --no-cache 就变成 False（通常会配合 default=True）
 parser.add_argument('--no-cache', action='store_false')
+
+# store_const（存一个固定常量）
+# --mode-dev → args.mode == 'dev'，一般和 const + dest 配合，做互斥模式的快捷开关
+parser.add_argument('--mode-dev', action='store_const',const='dev', dest='mode')
+
 ```
