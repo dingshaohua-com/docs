@@ -57,8 +57,15 @@ parser.add_argument('--debug', action='store_true')
 # 默认 True，加上 --no-cache 就变成 False（通常会配合 default=True）
 parser.add_argument('--no-cache', action='store_false')
 
+# append（追加到列表）
+# --host a --host b → args.host == ['a', 'b']
+parser.add_argument('--host', action='append')
+
 # store_const（存一个固定常量）
 # --mode-dev → args.mode == 'dev'，一般和 const + dest 配合，做互斥模式的快捷开关
 parser.add_argument('--mode-dev', action='store_const',const='dev', dest='mode')
 
+# count（计数）
+# -v → 1， -vv → 2， -vvv → 3
+parser.add_argument('-v', '--verbose', action='count', default=0)
 ```
