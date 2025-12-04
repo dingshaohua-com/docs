@@ -54,6 +54,6 @@ print(args.abc)
 # store_true / false 这个参数不用带值，只要写上这个选项就变成 True/False
 # 默认 args.debug == False，加上 --debug → True
 parser.add_argument('--debug', action='store_true')
-parser.add_argument('--no-cache', action='store_false')
 # 默认 True，加上 --no-cache 就变成 False（通常会配合 default=True）
+parser.add_argument('--no-cache', action='store_false')
 ```
