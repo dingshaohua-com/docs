@@ -34,7 +34,7 @@
               "contents/python/module",
               "contents/python/venv",
               "contents/python/io",
-              "contents/python/pytest/env"
+              "contents/python/env"
             ]
           },
            {
