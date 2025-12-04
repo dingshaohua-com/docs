@@ -41,7 +41,23 @@ print(args.abc)
 
 ### 帮助
 
-当运行脚本加上 `--help` 的时候，打印当前脚本支持的所有参数及说明（不会执行脚本内容）。
+当运行脚本加上 `--help` 参数时，会打印当前脚本支持的所有参数及说明（不会执行脚本内容）。\
+`--help` 这个命令参数与 `argparse` 无关，是python预知的一个参数。
+
+```python
+from argparse import ArgumentParser
+
+# 创建一个解析器对象，用来“定义”和“解析”命令行参数
+parser = ArgumentParser()
+# 定义一个参数 --abc
+parser.add_argument('--abc', help="就是随意定义的一个参数")
+# 解析命令行参数
+args = parser.parse_args()
+```
+
+执行 
+
+<img src="https://img.dingshaohua.com/doc-python/cli-arg-help-20251205002325.jpg" alt="" />
 
 ### 参数说明
 
