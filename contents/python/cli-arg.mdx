@@ -39,6 +39,10 @@ args = parser.parse_args()
 print(args.abc)
 ```
 
+### 帮助
+
+当运行脚本加上 `--help` 的时候，打印当前脚本支持的所有参数及说明（不会执行脚本内容）。
+
 ### 参数说明
 
 #### action
@@ -77,4 +81,12 @@ print(args.abc)
 
 # 输出hello
 py .\run-test.py 
+```
+
+### help
+
+参数的说明文字，显示在 `--help` 输出里
+
+```python
+parser.add_argument('--abc', default='hello', help='这就是个随意写的参数')
 ```
