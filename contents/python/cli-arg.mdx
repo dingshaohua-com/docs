@@ -1,0 +1,59 @@
+---
+title: "命令行参数"
+---
+
+command-line argument 中文 命令行参数 的意思，简写cli arg
+
+命令行参数是指： 在执行程序时，通过命令行界面传递给程序的额外信息或选项！
+
+## 使用argv获取
+
+内置的 sys 模块提供了一个argv的方法，可以获取当前执行脚本信息
+
+```python
+import sys
+
+print(sys.argv)
+```
+
+输出如下
+
+```bash
+py .\run-test.py --abc prod
+['.\\run-test.py', '--abc', 'prod']
+```
+
+## 使用argparse获取
+
+sys.argv方式获取的参数太原始和简陋了，不方便拿来即用，好在官方有提供了一个！
+
+`argparse` 是 Python 标准库里自带的**命令行参数解析库**
+
+```python
+from argparse import ArgumentParser
+
+# 创建一个解析器对象，用来“定义”和“解析”命令行参数
+parser = ArgumentParser()
+
+# 定义一个参数 --abc
+parser.add_argument('--abc')
+
+# 解析命令行参数，并打印
+args = parser.parse_args()
+print(args.abc)
+```
+
+### 参数说明
+
+#### action
+
+用来告诉 `argparse`：解析到这个参数时，要“怎么处理”它。\
+默认值为 `store`：把值存到 `args.xxx` 里。
+
+```python
+# store_true / false
+# 这个参数不用带值，只要写上这个选项就变成 True/False
+# 默认 args.debug == False
+# 加上 --debug → True
+parser.add_argument('--debug', action='store_true')
+```
