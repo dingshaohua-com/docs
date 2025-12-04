@@ -48,8 +48,26 @@
           }
          
         ]
+      },
+      {
+        "tab": "React",
+        "groups": [
+          {
+            "group": "快速开始",
+            "pages": [
+              "contents/react/index"
+            ]
+          },
+           {
+            "group": "笔记心得",
+            "pages": [
+              "contents/react/note/index",
+              "contents/react/note/init-state",
+            ]
+          }
+         
+        ]
       }
-    
     ]
   },
   "logo": {
