@@ -44,7 +44,7 @@ print(result.stdout)
 
 ## 子进程的执行结果
 
-## stdout与stderr
+### stdout与stderr
 调用 `subprocess.run()` 时，会返回一个 `CompletedProcess` 对象（表示该子进程已经执行完成的结果快照），其中常用属性有：
 
 - `result.stdout`：子进程的标准输出（standard output）
@@ -68,7 +68,7 @@ print(result.stdout)
 * Java 里：System.out.println() 写到 stdout，System.err.println() 写到 stderr
 * 各种命令行工具（git、ls、curl、npm、node 自己）内部也会写 stdout/stderr
 
-## returncode
+### returncode
 `result.returncode` 是**子进程的退出码（exit code）**，用来表示这个命令/程序最后是怎么结束的。
 
 常见约定：
@@ -98,3 +98,34 @@ print(result.stderr)      # 错误信息
 
 - “成功/失败”主要看 `returncode`
 - 输出内容是什么，主要看 `stdout` / `stderr` 写了什么
+
+
+## 来个实际例子
+单元测中 利用断言，来让子进程收集错误信息
+
+other_script.py 代码如下
+```
+assert 1==2
+```
+
+run_test.py 主程序如下
+```python
+result = subprocess.run(["py", "./other_script.py"], capture_output=True, text=True)
+if result.stdout:
+    print("STDOUT:", result.stdout)
+if result.stderr:
+    print("STDERR:", result.stderr)
+print(f"pytest 返回码: {result.returncode}")
+```
+
+最终控制台输出如下
+```bash
+PS python run-test.py
+STDERR: Traceback (most recent call last):
+  File "other_script.py", line 1, in <module>
+    assert 1==2
+           ^^^^
+AssertionError
+
+pytest 返回码: 1
+```
