@@ -1,0 +1,64 @@
+---
+title: "延迟初始化状态"
+---
+
+## React useState 初始值只生效一次
+
+### 问题现象
+
+```tsx
+const { data } = useAsyncData(); // 异步加载数据
+const firstId = data?.items[0]?.id ?? "";
+const [selectedId, setSelectedId] = useState(firstId);
+
+console.log(firstId);     // "abc123" ✅ 有值
+console.log(selectedId);  // ""       ❌ 空的
+```
+
+### 问题原因
+
+`useState(initialValue)` 的初始值**只在组件首次挂载时使用一次**。
+
+1. 首次渲染：`data` 为 `undefined` → `firstId = ""` → `useState("")`
+2. 数据加载完成，组件重新渲染
+3. `firstId` 现在有值了
+4. 但 `useState` **不会**用新值更新状态，初始值被忽略
+
+### 解决方案
+
+#### 方案一：useEffect 同步（简单但多一次渲染）
+
+```tsx
+const [selectedId, setSelectedId] = useState(firstId);
+
+useEffect(() => {
+  if (firstId) {
+    setSelectedId(firstId);
+  }
+}, [firstId]);
+```
+
+#### 方案二：派生值模式 ✅ 推荐
+
+```tsx
+// 只存储用户主动选择的值，null 表示还没选过
+const [userSelectedId, setUserSelectedId] = useState<string | null>(null);
+// 派生最终值：用户选过就用用户的，否则用默认值
+const selectedId = userSelectedId ?? firstId;
+```
+
+#### 方案三：组件 key 重置（简单粗暴）
+
+```tsx
+// 父组件
+<MyComponent key={data?.id} data={data} />
+// data 变化时整个组件重新挂载，useState 重新初始化
+```
+
+### 方案对比
+
+| 方案        | 优点         | 缺点              |
+| --------- | ---------- | --------------- |
+| useEffect | 直观易懂       | 多一次渲染，可能覆盖用户选择  |
+| **派生值**   | 无额外渲染，逻辑清晰 | 需要区分"用户值"和"默认值" |
+| key 重置    | 最简单        | 会重置组件所有状态       |
