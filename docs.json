@@ -58,14 +58,13 @@
               "contents/react/index"
             ]
           },
-           {
-            "group": "笔记心得",
-            "pages": [
-              "contents/react/note/index",
-              "contents/react/note/init-state",
-            ]
-          }
-         
+         {
+          "group": "笔记心得",
+          "pages": [
+            "contents/react/note/index",
+            "contents/react/note/init-state"
+          ]
+         }
         ]
       }
     ]
