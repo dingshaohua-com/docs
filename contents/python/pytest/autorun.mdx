@@ -1,14 +1,36 @@
 ---
-title: 自动运行
+title: 自动测试
 ---
+符合pytest扫描规则代码，它会自动运行，而不用你手动再调用
 
-**pytest 会自动找到了所有 `test_` 开头的函数并执行了它们！**
 
-不需要手动调用！
-
-```tsx
-pytest some.py
+## 自动测试函数
+pytest 会自动找到了所有 `test_` 开头的函数并执行了它们！
+```python
+def test_add():
+    assert 1 + 1 == 2
 ```
+
+当你运行 `pytest test_demo.py`的时候，这个函数就会被执行！
+
+
+
+## 自动测试类
+pytest 会自动找并自动执行 TestXxx 开头的 类里的 test_xxx方法
+```py
+class TestCalculator:
+    def abc(self):
+        assert 1 + 1 == 2
+    def test_add(self):
+        assert 1 + 1 > 2
+```
+当你运行 `pytest test_demo.py`的时候，这个TestCalculator类里的test_add函数就会被执行！
+
+
+{/* 
+
+
+## 自动
 
  但是会隐藏输入，即便你代码内有 print 也不会在控制台看到，除非你
 
@@ -16,15 +38,9 @@ pytest some.py
 pytest some.py -s
 ```
 
-同时也会自动执行 TestXxx 开头的 class 里的 test_xxx方法
 
-```tsx
-class TestCalculator:
-    def abc(self):
-        print("我名称没有 test 开头，不会被调用")
-    def test_add(self):
-        print("执行加法测试用例了")
-```
+
+
 
 另外，测试类，会默认提供两个钩子方法，用户执行前后的操作
 
@@ -65,4 +81,4 @@ def test_demo():
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])
      
-```
+``` */}

@@ -3,3 +3,31 @@ title: 介绍
 ---
 
 [pytest](https://www.w3cschool.cn/pytest) 是一个成熟的全功能 Python 测试工具，可以帮助你编写更好的程序，使编写小型可读测试变得容易，并且可以扩展以支持应用程序和库的复杂功能测试。
+
+## 安装
+pytest属于三方包，需要额外安装
+```bash
+pip install pytest
+```
+
+## 基本用法
+新建一个 test_demo.py 文件，输入以下代码
+```python
+def test_add():
+    assert 1 + 1 == 2
+```
+
+然后在终端中运行 `pytest test_demo.py`
+执行结果如下，包含断言测试统计结果、耗时等信息
+```bash
+PS pytest test_demo.py
+==== test session starts === #测试开始
+platform win32 -- Python 3.14.0... # 测试环境：win、python v3...
+rootdir: D:\code\pytest-demo # 项目根目录
+collected 1 item   #扫描到1个需要测试的case
+test_demo.py .   [100%] # 测试完成
+
+==== 1 passed in 0.00s === #测试结束：耗时0秒，1个通过
+```
+![](https://img.dingshaohua.com/doc-python/pytest-eg-20251206020146.jpg)
+
