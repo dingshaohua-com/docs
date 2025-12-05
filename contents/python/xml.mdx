@@ -13,6 +13,63 @@ XML 指可扩展标记语言，被设计用来传输和存储数据，和 json �
    <gender>男</gender>
 </person>
 ```
-Python 使用 ElementTree 解析 xml，对 xml 进行增删改查操作！
+Python 使用 ElementTree 解析 xml，对 xml 进行增删改查操作，以下具体介绍(和 js 解析 html 一致)！
+
+
+
+## 解析
+fromstring方法： 可以将包含XML数据的字符串转换为 Element 对象：
+```python
+import xml.etree.ElementTree as ET
+
+xml_string = '<root><element>Some data</element></root>'
+root = ET.fromstring(xml_string)
+
+print(root.tag)  # 输出: root
+print(root[0].tag)  # 输出: element
+print(root[0].text)  # 输出: Some data
+```
+
+parse方法： 用于解析XML文件，解析整个 XML 文档
+```py
+tree = ET.parse('example.xml')
+root = tree.getroot()
+```
+
+## 查找
+## 查找元素
+```py
+# find方法： 可以查找具有指定标签的第一个子元素
+title_element = root.find('title')
+
+# 使用 findall 方法可以查找具有指定标签的所有子元素
+book_elements = root.findall('book')
+```
+
+
+### 查找元素的属性和内容
+```py
+# 通过 attrib 可以访问元素的属性
+price = book_element.attrib['price']
+
+# 通过 text 属性可以访问元素的文本内容：
+title_text = title_element.text
+```
+
+## 创建
+```py
+# 使用 Element 构造函数可以创建新的元素
+new_element = ET.Element('new_element')
+
+# 使用 SubElement 函数可以创建具有指定标签的子元素
+new_sub_element = ET.SubElement(root, 'new_sub_element')
+```
+
+
+## 修改
+
+
+
+
 
 
