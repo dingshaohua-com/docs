@@ -1,6 +1,64 @@
 ---
 title: sys模块
 ---
+“sys”是“system”的缩写。
 
-sys 是 Python 标准库中的一个模块，提供了与 Python 解释器及其环境交互的功能，通过 sys 库 你可以访问与 Python 解释器相关的变量和函数，例如命令行参数、标准输入输出、程序退出等。
+Python 的 sys 模块 是 Python 标准库中的一个模块，提供与解释器/运行时“系统”相关的参数和函数，比如：
+```
+sys.argv：命令行参数
+sys.path：模块搜索路径
+sys.version / sys.platform：解释器版本与平台信息
+sys.stdin / stdout / stderr：标准输入输出流
+sys.exit()：退出程序
+```
 
+## 系统信息
+```python
+import sys
+
+# 获取 Python 解释器的版本信息
+print("Python 版本:", sys.version)
+
+# Python获取模块搜索路径
+print("模块搜索路径:", sys.path)
+
+# 获取操作系统平台信息
+print("操作系统平台:", sys.platform)
+```
+
+## 退出程序
+```python
+import sys
+
+# 退出程序
+sys.exit("程序退出")
+```
+
+## 命令行参数
+sys.argv 是一个包含命令行参数的列表。sys.argv[0] 是脚本的名称，后续元素是传递给脚本的参数。
+```python
+import sys
+
+print("脚本名称:", sys.argv[0])
+print("参数列表:", sys.argv[1:])
+```
+
+## 标准输入输出流
+sys.stdin、sys.stdout 和 sys.stderr 分别代表标准输入、标准输出和标准错误流。
+```python
+import sys
+
+# 标准输入
+user_input = sys.stdin.readline()
+print("用户输入:", user_input)
+
+# 标准输出
+sys.stdout.write("这是标准输出\n")
+
+# 标准错误
+sys.stderr.write("这是标准错误输出\n")
+```
+
+
+## 其它
+更多[看这里吧](https://www.runoob.com/python3/python-sys.html)

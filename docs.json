@@ -41,13 +41,19 @@
               "contents/python/sys"
             ]
           },
-           {
-            "group": "插件-Pytest",
+          {
+            "group": "三方包-Pytest",
             "pages": [
               "contents/python/pytest/index",
               "contents/python/pytest/autorun",
               "contents/python/pytest/fixture",
               "contents/python/pytest/mark"
+            ]
+          },
+          {
+            "group": "三方包-XML",
+            "pages": [
+              "contents/python/xml"
             ]
           }
          
