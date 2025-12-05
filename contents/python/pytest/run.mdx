@@ -133,7 +133,7 @@ pytest除了支持cli方式调用之外（`pytest xxx.py`），还支持一编�
 import pytest
 
 if __name__ == "__main__": # 运行测试的主入口（这一行可选）
-    # __file__是python内置的变量，代指当前文件
+    # __file__是python内置的全局变量，代指当前文件
     pytest.main([__file__, "-v", "-s"]) 
 ```
 
