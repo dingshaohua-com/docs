@@ -2,469 +2,185 @@
 title: 标记
 ---
 
-pytest 的标记系统分为两个层次：
+@pytest.mark 是 pytest 测试框架中的一个装饰器，用于给测试函数或测试类添加标记（marker）。   
+这些标记除了能对对测试进行分类、过滤外，还能给被装饰的函数一些额外的功能！
 
----
 
-## 1. **单纯标记分组**（无功能）
 
-```python
-@pytest.mark.slow
-def test_heavy_computation():
-    # 这个标记只是分类，没有额外功能
-    time.sleep(10)
-    assert True
+## 标记的分类
+我们按照有无功能将 标记分为： 功能性标记 和 无功能性标记 两大类
+
+| 类别 | 特点 | 主要用途 | 是否影响测试逻辑 |
+|------|------|----------|----------------|
+| **功能性标记** | 会改变测试的执行方式 | 参数化、跳过、预期失败 | ✅ 直接影响 |
+| **无功能性标记** | 仅添加元数据/标签 | 分类、筛选、分组 | ❌ 不影响逻辑 |
+
+
+## 无功能性标记
+pytest 的所有内置 mark 都是功能性标记，没有内置的"纯粹无功能"标记，用户自定义标记即是无功能标记！
+
+首先我们需要 `pytest.ini` 中注册自定义的mark，以避免警告，比如：
+```ini
+[pytest]
+# 自定义mark
+markers =
+    p0: P0核心测试用例
+    p1: P1重要功能测试用例
+    performance: 性能测试用例
+    api: 普通API接口测试
 
 ```
 
-这种标记只用于：`pytest -m slow`
+最后使用即可（给测试用例打打标记）
+```py
+import pytest
 
----
+@pytest.mark.p0
+def test_one():
+    assert 1==1
 
-## 2. **有功能的标记**（内置特殊标记）
+@pytest.mark.p0
+def test_two():
+    assert 1==1
 
-### `@pytest.mark.skip` - 跳过功能
+@pytest.mark.p1
+def test_three():
+    assert 1==1
+```
 
-```python
+可以筛选出仅符合条件的用例去跑测试，比如
+```bash
+pytest -m p0
+```
+
+另外我们还可以根据标签生成测试结果分组统计，pytest 原生不完全支持这个功能，我们可以 `pytest-html`来解决， `pip install pytest-html`
+```bash
+# 生成HTML报告，会按标记分组
+pytest --html=report.html --self-contained-html
+```
+
+## 功能性标记
+如上所提，pytest内置了很多功能性mark供我们使用！
+```py
+# 跳过功能
 @pytest.mark.skip(reason="Bug #123 未修复")
 def test_broken_feature():
     assert False  # 🚫 这个测试不会执行！
 
-```
-
-### `@pytest.mark.skipif` - 条件跳过功能
-
-```python
-import sys
-
-@pytest.mark.skipif(sys.version_info < (3, 8), reason="需要 Python 3.8")
-def test_walrus_operator():
-    # 🚫 Python < 3.8 时跳过
-    assert (x := 5) == 5
-
-```
-
-### `@pytest.mark.xfail` - 预期失败功能
-
-```python
-@pytest.mark.xfail(reason="已知问题")
-def test_flaky_api():
-    result = unreliable_api()
-    # ❌ 如果失败：显示 XFAIL（预期失败）
-    # ✅ 如果通过：显示 XPASS（意外通过）
-    assert result == "expected"
-
-```
-
-### `@pytest.mark.parametrize` - 参数化功能
-
-```python
-@pytest.mark.parametrize("a,b,expected", [
-    (1, 2, 3),
-    (5, -3, 2)
-])
-def test_addition(a, b, expected):
-    # 🔄 这个测试会运行 2 次，使用不同参数
-    assert a + b == expected
-
-```
-
-### `@pytest.mark.timeout` - 超时功能（需要插件）
-
-```python
+# 超时功能（需要插件）
 @pytest.mark.timeout(5)  # 5秒超时
 def test_slow_operation():
     time.sleep(10)  # 🕐 10秒后会超时失败
     assert True
 
+# 参数化测试功能（这个单独讲，比较重要）
+@pytest.mark.parametrize(...)
+def test_addition():
+    pass
 ```
 
----
+### 参数化测试功能
+参数化测试功能`@pytest.mark.parametrize`，是pytest内置的一个非常强大且重要的功能性标记！   
+参数化测试核心功能就是：让一个测试函数使用不同的参数运行多次！
 
-## 3. **自定义功能标记**（通过钩子实现）
-
-你甚至可以创建有自己的功能的标记：
-
-### 在 `conftest.py` 中：
-
-```python
-def pytest_configure(config):
-    # 注册自定义标记
-    config.addinivalue_line(
-        "markers",
-        "important: 重要测试，失败会阻断CI"
-    )
-
-def pytest_collection_modifyitems(config, items):
-    """修改收集到的测试项"""
-    for item in items:
-        # 检查是否有 @pytest.mark.important
-        if item.get_closest_marker("important"):
-            # 提升重要测试的优先级
-            item.add_marker(pytest.mark.run(order=1))
-
+```py
+arg_values=[] # 列表：参数值列表
+# 使用方式如下: 第一个参数是字符串类型的参数名，用逗号分隔
+@pytest.mark.parametrize( "arg_names",  arg_values)
 ```
 
-### 在测试中：
-
-```python
-@pytest.mark.important
-def test_critical_feature():
-    # 这个测试有特殊处理（比如优先运行）
-    assert critical_function() == "working"
-
-```
-
----
-
-## 4. **通过 fixture 实现功能标记**
-
-标记还可以与 fixture 配合实现复杂功能：
-
-### 自动跳过标记的测试：
-
-```python
+#### 单参数测试用例
+```py
 import pytest
 
-@pytest.fixture(autouse=True)
-def skip_slow_tests(request):
-    # 如果命令行没有 --run-slow，就跳过标记为 slow 的测试
-    if request.node.get_closest_marker("slow"):
-        if not request.config.getoption("--run-slow"):
-            pytest.skip("需要 --run-slow 参数来运行慢速测试")
-
-@pytest.mark.slow
-def test_very_slow():
-    time.sleep(10)  # 只有 --run-slow 时才会执行
-    assert True
-
+@pytest.mark.parametrize("number", [-1, 2, 3, 4, 5])
+def test_is_positive(number):
+    assert number > 0
 ```
+运行之后，可以看到测试用例test_is_positive跑了5次（1次失败+4次成功）
+![](https://img.dingshaohua.com/doc-python/parametrize-simple-20251207021057.jpg)
 
-### 标记触发特殊配置：
-
-```python
-@pytest.fixture
-def database(request):
-    # 根据标记选择不同的数据库配置
-    if request.node.get_closest_marker("integration"):
-        return connect_to_real_database()
-    else:
-        return connect_to_mock_database()
-
-@pytest.mark.integration
-def test_real_database(database):
-    # 使用真实数据库
-    assert database.query("SELECT 1") == 1
-
-```
-
----
-
-## 5. **插件提供的功能标记**
-
-很多 pytest 插件会添加自己的功能标记：
-
-### `pytest-django`：
-
-```python
-@pytest.mark.django_db
-def test_database_operation():
-    # 这个标记会设置Django数据库事务
-    user = User.objects.create(name="test")
-    assert user.name == "test"
-
-```
-
-### `pytest-asyncio`：
-
-```python
-@pytest.mark.asyncio
-async def test_async_function():
-    # 这个标记让pytest能运行异步测试
-    result = await async_function()
-    assert result == "done"
-
-```
-
----
-
-## 总结
-
-**pytest 标记的功能层次**：
-
-| 类型 | 功能 | 例子 |
-| --- | --- | --- |
-| **单纯标记** | 只用于分组筛选 | `@pytest.mark.slow` |
-| **内置功能标记** | 改变测试行为 | `@pytest.mark.skip`, `@pytest.mark.parametrize` |
-| **自定义功能标记** | 通过钩子添加逻辑 | `@pytest.mark.important` + 自定义处理 |
-| **插件功能标记** | 插件提供的特殊功能 | `@pytest.mark.django_db` |
-
-**所以标记不仅仅是分组，它们可以：**
-
-- ✅ 跳过测试
-- ✅ 参数化测试
-- ✅ 预期失败
-- ✅ 触发特殊配置
-- ✅ 集成插件功能
-- ✅ 自定义处理逻辑
-
-**标记系统是 pytest 最强大的特性之一**，让测试变得极其灵活！
-
-另外 ，标记可以 没有预先定义，但可以用。*比如我  `@pytest.mark.abc`*
-
-**`@pytest.mark.p1` 是随手写的，不是 pytest 内置的！是一个常见的自定义标记用法**，通常用于**测试用例优先级管理**。
-
-记书写后，怎么体现呢，比如过滤，还是会输出？
-
-**标记主要通过两种方式体现：过滤执行 和 测试报告。**
-
----
-
-## 1. **过滤执行**（主要体现方式）
-
-### 按标记选择测试：
-
-```bash
-# 只运行有 p1 标记的测试
-pytest -m p1
-
-# 运行没有 slow 标记的测试
-pytest -m "not slow"
-
-# 运行 p1 或 p2 标记的测试
-pytest -m "p1 or p2"
-
-# 运行有 p1 标记但没有 slow 标记的测试
-pytest -m "p1 and not slow"
-
-```
-
-### 实际例子：
-
-```python
+单个参数的值除了是基本类型，还可以是复杂点的类型，比如字典
+```py
 import pytest
-import time
 
-@pytest.mark.p1
-def test_login():
-    print("P1: 用户登录测试")
-    assert True
-
-@pytest.mark.p2
-def test_profile():
-    print("P2: 用户资料测试")
-    assert True
-
-@pytest.mark.slow
-def test_performance():
-    time.sleep(2)
-    print("SLOW: 性能测试")
-    assert True
-
+# 简单的字典参数，包含中文名字和年龄
+@pytest.mark.parametrize("user_info", [
+    {"name": "张三", "age": 25},
+    {"name": "李四", "age": 30},
+])
+def test_chinese_user_info(user_info):
+    print(f"用户: {user_info['name']}, 年龄: {user_info['age']}")
+    
+    # 验证数据存在
+    assert "name" in user_info
+    assert "age" in user_info
+    
+    # 验证中文名字（2-3个汉字）
+    assert isinstance(user_info["name"], str)
+    assert 2 <= len(user_info["name"]) <= 3
+    assert all('\u4e00' <= char <= '\u9fff' for char in user_info["name"])  # 验证是中文
+    
+    # 验证年龄范围
+    assert isinstance(user_info["age"], int)
+    assert 18 <= user_info["age"] <= 60  # 合理的年龄范围
 ```
 
-**运行效果**：
+#### 多参数测试用例
+```py
+import pytest
 
+params_value = [(1, 2),(3, 4),(5, 6)]
+@pytest.mark.parametrize("x,y",params_value)
+def test_coordinates(x, y):
+    assert x < y
+
+# 运行测试用例后，会发现该用例被执行3次，均为成功！
+```
+
+#### 参数别名ids
+其实还支持第三个参数`@pytest.mark.parametrize(params_name,params_value, ids)`     
+第三个参数是 ids为可选参数，用来给每组参数起一个可读的名字，也是列表类型，主要用于提高测试报告可读性。
+```py
+import pytest
+
+# 不使用 ids
+@pytest.mark.parametrize("name,age", [
+    ("张三", 25),
+    ("李四", 30),
+    ("王五", 35)
+])
+def test_without_ids(name, age):
+    assert age > 20
+
+# 使用 ids
+@pytest.mark.parametrize(
+    "name,age",
+    [
+        ("张三", 25),
+        ("李四", 30),
+        ("王五", 35)
+    ],
+    ids=[
+        "年轻员工-张三",
+        "中年员工-李四", 
+        "资深员工-王五"
+    ] # ids 数量必须和参数值匹配
+)
+def test_with_ids(name, age):
+    assert age > 20
+```
+
+运行测试后的结果是
 ```bash
-$ pytest -m p1 -v
-test_demo.py::test_login PASSED    # 只运行p1测试
+# 不使用 ids输出：
+test_demo.py::test_without_ids[张三-25] ✓
+test_demo.py::test_without_ids[李四-30] ✓  
+test_demo.py::test_without_ids[王五-35] ✓
 
-$ pytest -m "p1 or p2" -v
-test_demo.py::test_login PASSED    # 运行p1和p2
-test_demo.py::test_profile PASSED
 
-$ pytest -m "not slow" -v
-test_demo.py::test_login PASSED    # 运行非slow测试
-test_demo.py::test_profile PASSED
-
+# 使用 ids输出：
+test_demo.py::test_with_ids[年轻员工-张三] ✓
+test_demo.py::test_with_ids[中年员工-李四] ✓
+test_demo.py::test_with_ids[资深员工-王五] ✓
 ```
-
----
-
-## 2. **测试报告输出**
-
-### 在详细模式下可以看到标记：
-
-```bash
-pytest -v
-
-```
-
-**输出**：
-
-```
-test_demo.py::test_login[p1] PASSED      # 看到 [p1] 标记
-test_demo.py::test_profile[p2] PASSED    # 看到 [p2] 标记
-test_demo.py::test_performance[slow] PASSED  # 看到 [slow] 标记
-
-```
-
-### 特殊标记的显式输出：
-
-```python
-@pytest.mark.skip(reason="功能暂未实现")
-def test_unimplemented():
-    assert False
-
-@pytest.mark.xfail(reason="已知问题")
-def test_broken_feature():
-    assert False
-
-```
-
-**输出**：
-
-```
-test_demo.py::test_unimplemented SKIPPED (功能暂未实现)
-test_demo.py::test_broken_feature XFAIL (已知问题)
-
-```
-
----
-
-## 3. **JSON/XML 报告中的体现**
-
-### 生成包含标记信息的报告：
-
-```bash
-pytest --json-report --json-report-file=report.json
-
-```
-
-**报告内容**：
-
-```json
-{
-  "tests": [
-    {
-      "nodeid": "test_demo.py::test_login",
-      "outcome": "passed",
-      "keywords": ["p1", "Pytest", "test_login"]
-    },
-    {
-      "nodeid": "test_demo.py::test_performance",
-      "outcome": "passed",
-      "keywords": ["slow", "Pytest", "test_performance"]
-    }
-  ]
-}
-
-```
-
----
-
-## 4. **通过钩子自定义输出**
-
-### 在 `conftest.py` 中自定义报告：
-
-```python
-def pytest_runtest_logreport(report):
-    if report.when == "call":  # 只关心测试执行阶段
-        # 获取测试的标记
-        markers = [marker.name for marker in report.nodeid.own_markers]
-
-        if "p1" in markers:
-            print(f"🚨 重要测试: {report.nodeid} - {report.outcome}")
-        elif "slow" in markers:
-            print(f"🐢 慢速测试: {report.nodeid} - {report.outcome}")
-
-```
-
----
-
-## 5. **实际工作流程示例**
-
-### 项目结构：
-
-```
-project/
-├── pytest.ini
-├── conftest.py
-└── tests/
-    ├── test_login.py
-    ├── test_profile.py
-    └── test_performance.py
-
-```
-
-### pytest.ini：
-
-```
-[pytest]
-markers =
-    p1: 优先级1 - 核心功能
-    p2: 优先级2 - 重要功能
-    p3: 优先级3 - 普通功能
-    slow: 慢速测试
-    smoke: 冒烟测试
-
-```
-
-### 不同场景的执行：
-
-**场景1：快速验证（CI流水线）**
-
-```bash
-pytest -m "p1 or smoke" -v --tb=short
-
-```
-
-只运行核心功能，快速反馈
-
-**场景2：完整测试（夜间构建）**
-
-```bash
-pytest -m "not slow" -v
-
-```
-
-运行所有非慢速测试
-
-**场景3：性能测试（单独运行）**
-
-```bash
-pytest -m slow -v --durations=10
-
-```
-
-只运行慢速测试，并显示最慢的10个
-
----
-
-## 6. **查看标记使用情况**
-
-### 查看哪些测试有特定标记：
-
-```bash
-# 查看所有p1标记的测试
-pytest -m p1 --collect-only
-
-# 查看所有标记
-pytest --markers
-
-```
-
-### 输出示例：
-
-```
-<Module test_login.py>
-  <Function test_login[p1]>
-<Module test_profile.py>
-  <Function test_profile[p2]>
-
-```
-
----
-
-## 总结
-
-**标记的体现方式**：
-
-| 方式 | 体现形式 | 使用场景 |
-| --- | --- | --- |
-| **过滤执行** | `pytest -m 标记` | 选择性运行测试 |
-| **测试报告** | 输出中显示 `[标记]` | 识别测试类型 |
-| **JSON报告** | 报告中包含标记信息 | 自动化分析 |
-| **自定义输出** | 通过钩子特殊处理 | 个性化报告 |
-
-**核心价值**：标记让测试管理从"全部运行"变成"精确打击"，大大提高测试效率！
