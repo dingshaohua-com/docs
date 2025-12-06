@@ -45,8 +45,59 @@ PASSED
 
 ## 夹具的定义
 上边只是夹具的一种定义方式，夹具还有其它定义方式，如下
-```py
 
+```py
+import pytest
+
+# 定义一个夹具
+@pytest.fixture()
+def my_fixture(): # 记住这个夹具名
+    print("\n我的测试夹具")  # 加 \n 换行
+    return 123
+
+# 方式一: 通过装饰器的方式使用夹具
+@pytest.mark.usefixtures("my_fixture")
+def test_fix1():
+    print("我是测试用例1")
+
+
+# 方式二：通过同名参数的方式使用夹具
+def test_fix2(my_fixture):
+    print("我是测试用例2")
+
+
+# 方式三：除了函数，类也可以使用夹具（之后类中的每个方法都会被注入夹具）
+@pytest.mark.usefixtures("my_fixture")
+class TestLogin:
+    def test_fix3(self):
+        print("我是测试用例3")
+    def test_fix4(self):
+        print("我是测试用例4")
+```
+
+
+pytest执行后，输出打印如下
+```bash
+=== test session starts ===
+platform win32 -- Python 3.14.0, pytest-9.0.1, pluggy-1.6.0
+rootdir: d:\code\pytest-demo
+configfile: pytest.ini
+collected 4 items                                                                                                                                                                                                                                      
+
+test_demo.py
+我的测试夹具
+我是测试用例1
+.
+我的测试夹具
+我是测试用例2
+.
+我的测试夹具
+我是测试用例3
+.
+我的测试夹具
+我是测试用例4
+.
+=== 4 passed in 0.01s ===
 ```
 
 ## 夹具返回值
@@ -59,10 +110,81 @@ import pytest
 def my_fixture():
     return 123
 
-# 通过参数的方式使用夹具
+# 通过参数的方式使用夹具（拿到夹具注入的[返回]值）
 def test_fix(my_fixture):
     assert my_fixture == 123
+
 ```
 
 
-https://blog.csdn.net/weixin_57805858/article/details/131286735
+
+## 夹具(定义)参数
+
+### autouse
+
+`autouse=True` 确实让夹具**独立自动调用**，不再依赖于手动在测试用例的显式注入
+
+```py
+import pytest
+
+@pytest.fixture(autouse=True)
+def setup_and_teardown():
+    """自动为所有测试设置和清理环境"""
+    print("\n=== 测试开始: 准备环境 ===")
+    # 设置代码...
+    yield  # 分隔 setup 和 teardown
+    print("\n=== 测试结束: 清理环境 ===")
+    # 清理代码...
+
+def test_example1():
+    print("执行测试1")
+    # 自动执行 setup_and_teardown
+
+def test_example2():
+    print("执行测试2")
+    # 同样自动执行 setup_and_teardown
+```
+autouse=True 的夹具通常用于不需要返回值的场景!
+
+
+### scope
+pytest 夹具的作用域（scope） 是它的核心特性之一，非常强大。共有4种：
+* scope="function"（默认）：每个测试函数都新建/销毁
+* scope="class"：每个测试类共享实例
+* scope="module"：每个.py文件共享实例
+* scope="session"：整个pytest运行过程共享实例
+
+```py
+import pytest
+
+# 1. function 作用域（默认） - 每个测试函数执行一次
+@pytest.fixture(scope="function")
+def func_fixture():
+    print("\n[function] 夹具执行")
+    return id(object())  # 每次返回不同ID
+
+# 2. class 作用域 - 每个测试类执行一次
+@pytest.fixture(scope="class")
+def class_fixture():
+    print("\n[class] 夹具执行")
+    return id(object())  # 同类中相同
+
+# 3. module 作用域 - 每个模块执行一次  
+@pytest.fixture(scope="module")
+def module_fixture():
+    print("\n[module] 夹具执行")
+    return id(object())  # 同模块中相同
+
+# 4. session 作用域 - 整个测试会话执行一次
+@pytest.fixture(scope="session")
+def session_fixture():
+    print("\n[session] 夹具执行")
+    return id(object())  # 全局相同
+```
+
+| 作用域 | 执行频率 | 典型适用场景 | 示例 |
+|--------|----------|------------|------|
+| **function** | 每个测试函数执行一次 | 需要完全隔离的测试数据、临时文件、独立状态 | 临时目录、测试数据生成、独立数据库事务 |
+| **class** | 每个测试类执行一次 | 类内共享的昂贵资源、相同配置的测试组 | 浏览器实例、API客户端、类级别的Mock |
+| **module** | 每个.py文件执行一次 | 模块内共享的全局状态、测试数据文件 | 配置文件加载、模块级测试数据、共享数据库连接 |
+| **session** | 整个pytest运行执行一次 | 全局共享的昂贵资源、一次性初始化 | 数据库连接池、缓存服务器、全局配置 |

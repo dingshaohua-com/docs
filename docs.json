@@ -47,8 +47,9 @@
             "group": "三方包-Pytest",
             "pages": [
               "contents/python/pytest/index",
+              "contents/python/pytest/context",
               "contents/python/pytest/autorun",
-              "contents/python/pytest/run",
+              "contents/python/pytest/cli-arg",
               "contents/python/pytest/fixture",
               "contents/python/pytest/mark"
             ]

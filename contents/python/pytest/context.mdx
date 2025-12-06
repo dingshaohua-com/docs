@@ -1,0 +1,25 @@
+---
+title: 用例上下文
+---
+
+test_context 是测试执行上下文对象，提供了测试执行时的各种元数据和操作能力
+```py
+# 通过test_context对象来获取测试执行上下文
+def test_fix2(test_context):
+    # ========== 1. 夹具相关操作 ==========
+    # 获取夹具值（最常用）
+    xx_fixture = test_context.getfixturevalue("xx")
+    
+    
+    # ========== 2. 测试信息 ==========
+    # 测试函数/方法本身
+    test_func = test_context.function  # <function test_example>
+    
+    # 测试名称
+    test_name = test_context.node.name  # "test_example"
+    
+    # 测试所在模块
+    module = test_context.module  # <module 'test_example'>
+```
+
+如果此测试case通过形参方式使用了夹具 `def test(my_fixture)`，则此对象就被顶掉了！
