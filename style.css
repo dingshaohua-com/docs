@@ -5,3 +5,46 @@ html, body {
 .nav-logo{
     zoom: 1.6;
 }
+
+/* 自定义滚动条样式 - 更细更美观 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 深色模式滚动条 */
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 防止滚动条出现/消失时宽度抖动 */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Firefox 滚动条样式 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+html.dark * {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
