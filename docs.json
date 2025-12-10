@@ -87,7 +87,8 @@
           {
             "group": "述职报告",
             "pages": [
-              "contents/other/index"
+              "contents/other/index",
+              "contents/other/v2"
             ]
           }
         ]
