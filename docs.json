@@ -80,6 +80,17 @@
           ]
          }
         ]
+      },
+      {
+        "tab": "其它",
+        "groups": [
+          {
+            "group": "述职报告",
+            "pages": [
+              "contents/other/index"
+            ]
+          }
+        ]
       }
     ]
   },
