@@ -1,0 +1,20 @@
+## 输出
+
+print 是内置的输出到控制台的方法，以下展示格式化方式
+
+```python
+print('{0} 和 {1}'.format('Google', 'Baidu'))
+# 输出：Google 和 Baidu
+
+print('{name}网址-{site}'.format(name='百度', site='baidu.com'))
+# 输出：百度网址-baidu.com
+
+print('%(name)s网址： %(site)s' % {'name': '百度', 'site': 'baidu.com'})
+# 字典传参
+
+print('%s网址： %s' % ('百度', 'baidu.com'))
+# 元组传参
+
+teacher = {'name': '张三', 'age': 26}
+print(f"姓名：{teacher['name']}，年龄：{teacher['age']}")
+```

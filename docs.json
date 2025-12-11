@@ -44,6 +44,14 @@
             ]
           },
           {
+            "group": "高级进阶",
+            "pages": [
+              "contents/python/advance/lang-type",
+              "contents/python/advance/interpreter"
+             
+            ]
+          },
+          {
             "group": "三方包-Pytest",
             "pages": [
               "contents/python/pytest/index",
@@ -100,3 +108,4 @@
    ]
   }
 }
+
