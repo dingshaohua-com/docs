@@ -1,0 +1,213 @@
+---
+title: 安装
+---
+
+
+## 拉取镜像
+```sh
+podman pull docker.io/rustdesk/rustdesk-server
+```
+
+
+## 脚本管理
+
+给脚本执行权限 `chmod +x /home/rustdesk-server/rustdesk-start.sh`
+```sh
+#!/bin/bash
+echo "========================================"
+echo "     RustDesk 服务器一键启动脚本"
+echo "========================================"
+echo ""
+
+# 检查镜像是否存在
+echo "🔄 检查/拉取最新镜像..."
+podman pull docker.io/rustdesk/rustdesk-server:latest 2>/dev/null || echo "使用本地镜像"
+
+# 清理可能存在的旧容器
+echo "🧹 清理旧容器..."
+podman rm -f hbbs hbbr 2>/dev/null || true
+
+# 启动 hbbs
+echo "🚀 启动 hbbs (ID服务器)..."
+podman run -d \
+  --name hbbs \
+  --network=host \
+  -v /home/rustdesk-server/data:/root \
+  -e RELAY_SERVER=66.112.211.55:21117 \
+  --restart unless-stopped \
+  docker.io/rustdesk/rustdesk-server:latest \
+  hbbs -r 66.112.211.55:21117
+
+# 启动 hbbr
+echo "🚀 启动 hbbr (中继服务器)..."
+podman run -d \
+  --name hbbr \
+  --network=host \
+  -v /home/rustdesk-server/data:/root \
+  --restart unless-stopped \
+  docker.io/rustdesk/rustdesk-server:latest \
+  hbbr
+
+echo ""
+echo "✅ 启动完成！"
+echo "========================================"
+```
+
+给脚本执行权限  `chmod +x /home/rustdesk-server/rustdesk-manage.sh`
+```sh
+#!/bin/bash
+cd /home/rustdesk-server
+
+case "$1" in
+    start)
+        echo "启动 RustDesk 服务..."
+        podman start hbbs hbbr
+        ;;
+    stop)
+        echo "停止 RustDesk 服务..."
+        podman stop hbbs hbbr
+        ;;
+    restart)
+        echo "重启 RustDesk 服务..."
+        podman restart hbbs hbbr
+        ;;
+    status)
+        echo "容器状态："
+        podman ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | grep -E "(hbbs|hbbr|CONTAINER)"
+        ;;
+    logs)
+        echo "hbbs 日志："
+        podman logs hbbs --tail 20
+        echo ""
+        echo "hbbr 日志："
+        podman logs hbbr --tail 20
+        ;;
+    update)
+        echo "更新镜像..."
+        podman pull docker.io/rustdesk/rustdesk-server:latest
+        ./rustdesk-manage.sh restart
+        ;;
+    key)
+        echo "公钥 (复制到客户端)："
+        cat data/id_ed25519.pub 2>/dev/null || echo "公钥文件不存在，请先启动服务"
+        ;;
+    ports)
+        echo "检查端口监听："
+        sudo ss -tulpn | grep 2111
+        ;;
+    clean)
+        echo "清理所有容器..."
+        podman rm -f hbbs hbbr
+        podman system prune -f
+        ;;
+    *)
+        echo "使用方法: $0 {start|stop|restart|status|logs|update|key|ports|clean}"
+        echo ""
+        echo "   start    启动服务"
+        echo "   stop     停止服务"
+        echo "   restart  重启服务"
+        echo "   status   查看状态"
+        echo "   logs     查看日志"
+        echo "   update   更新镜像"
+        echo "   key      查看公钥"
+        echo "   ports    检查端口"
+        echo "   clean    清理容器"
+        ;;
+esac
+```
+
+使用脚本
+```sh
+# 启动服务
+./rustdesk-start.sh
+
+# 查看容器状态
+./rustdesk-manage.sh status
+
+# 检查端口
+./rustdesk-manage.sh ports
+
+# 获取公钥（重要！客户端需要）
+./rustdesk-manage.sh key
+
+# 查看日志
+./rustdesk-manage.sh logs
+```
+
+
+{/* 
+使用Podman Compose   
+为了更方便的，我们使用Podman Compose来管理容器。
+
+* Podman 版的 Docker Compose
+* 让你能使用 docker-compose.yml 文件管理多个容器
+* 支持 docker-compose 命令
+
+
+```sh
+# 安装podman-compose
+apt install -y podman-compose
+```
+
+
+为 RustDesk 创建专用目录
+```sh
+# 创建项目目录
+mkdir -p /home/rustdesk-server
+cd /home/rustdesk-server
+
+# 创建数据目录
+mkdir -p data
+```
+
+
+每个项目/应用有自己的 docker-compose.yml
+文件只管理它所在目录下的相关容器
+不同项目的 Compose 文件互不影响
+```sh
+# /home/rustdesk-server/docker-compose.yml
+version: '3'
+services:
+  hbbs:
+    container_name: hbbs
+    image: docker.io/rustdesk/rustdesk-server:latest
+    command: hbbs -r YOUR_SERVER_IP:21117
+    volumes:
+      - /home/rustdesk-server/data:/root
+    network_mode: "host"
+    restart: unless-stopped
+    environment:
+      - RELAY_SERVER=YOUR_SERVER_IP:21117
+  
+  hbbr:
+    container_name: hbbr
+    image: docker.io/rustdesk/rustdesk-server:latest
+    command: hbbr
+    volumes:
+      - /home/rustdesk-server/data:/root
+    network_mode: "host"
+    restart: unless-stopped
+```
+
+对 Podman/Docker 来说，hbbs 和 hbbr 是两个独立的容器（服务于同一个应用）。
+
+
+最后使用 podman-compose 启动,
+podman-compose 会查找当前目录下的 docker-compose.yml 文件，因此命令要在要在`/home/rustdesk-server` 目录下执行
+```sh
+podman-compose up -d # 启动
+
+# 检查容器状态
+podman ps
+# 或
+sudo podman ps
+
+# 查看 hbbs 日志
+podman logs hbbs
+
+# 查看生成的密钥（在 data 目录中）
+ls -la data/
+cat data/id_ed25519.pub  # 这是你的公钥，客户端需要
+```
+ */}
+

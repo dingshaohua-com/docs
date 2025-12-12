@@ -72,6 +72,24 @@
         ]
       },
       {
+        "tab": "Podman",
+        "groups": [
+          {
+            "group": "快速开始",
+            "pages": [
+              "contents/podman/index",
+               "contents/podman/install"
+            ]
+          },
+          {
+            "group": "RustDesk",
+            "pages": [
+              "contents/podman/rustdesk/index"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "React",
         "groups": [
           {

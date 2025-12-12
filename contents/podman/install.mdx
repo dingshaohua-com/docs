@@ -1,0 +1,94 @@
+---
+title: 安装
+---
+
+
+## 安装与卸载
+
+```sh
+# Debian/Ubuntu
+apt install podman -y
+```
+
+安装完成后验证
+```sh
+podman --version
+```
+
+卸载
+```sh
+apt remove podman -y
+```
+
+## 使用
+systemctl 可以管理 podman 服务，另外这里也介绍一些常用的 podman 命令
+```sh
+
+# 运行一个简单的容器
+podman run hello-world
+
+# 列出所有容器
+podman ps -a
+
+# 停止所有容器
+podman ps -a # 或者podman stop $(podman ps -aq)
+
+# 删除所有容器
+podman rm $(podman ps -aq)
+
+# 列出所有镜像
+podman images
+# 删除所有镜像
+podman rmi $(podman images -aq)
+# 强制删除所有镜像（包括正在使用的）
+podman rmi -f $(podman images -aq)
+# 拉取镜像
+podman pull xxx
+```
+
+
+## 概念
+
+当您执行 `podman run hello-world` 时，Podman 会按顺序做以下几件事：
+
+1.  检查镜像：会在您本地查找是否已经存在一个叫做 `hello-world` 的镜像。
+2.  下载镜像：若本地没有这个镜像，则从公共镜像仓库（如 Docker Hub）拉取下载它。
+3.  创建容器：基于 `hello-world` 镜像 创建一个新的容器实例。这个步骤会设置容器的文件系统、配置网络、环境变量等，但容器此时处于“已创建”状态，尚未运行。
+4.  运行容器：启动这个新创建的容器。对于 `hello-world` 镜像，它内部只有一个简单的程序，这个程序会打印出一些欢迎和说明信息到终端。
+5.  执行完毕并退出：`hello-world` 容器的任务就是打印信息，一旦信息打印完成，容器内的进程就结束了，容器也随之停止运行。
+
+**所以，更精确的理解是：**
+`podman run` 是一个 **“创建并运行”** 的组合命令。它创建了一个临时容器来执行一个任务，任务完成后容器就停止了。
+
+---
+
+### 创建 vs 运行 vs 镜像
+*   **镜像（Image）**：好比是一个**只读的软件安装包或模板**。`hello-world` 就是一个镜像。它本身不会运行，只是包含了运行所需的一切（代码、运行时、库等）。你可以重复使用同一个镜像创建无数个容器。
+*   **容器（Container）**：是镜像的一个**运行实例**。好比是用软件安装包（镜像）安装好后正在运行的**进程**。容器是可读写的、有生命的（从启动到停止）。`podman run` 就是创建并启动这个进程。
+*   **创建（Create）**：特指从镜像生成一个容器的配置和文件系统层的动作。你可以用 `podman create` 命令只创建而不运行容器。
+*   **运行（Run）**：特指启动一个容器内的进程。
+
+### 相关命令对比
+
+```bash
+# 1. 只拉取镜像，不创建或运行容器
+podman pull hello-world
+
+# 2. 只创建容器，但不运行它（容器处于“Created”状态）
+podman create --name my-hello hello-world
+
+# 3. 启动一个已经创建好的容器（上面创建的 my-hello）
+podman start my-hello
+
+# 4. 【最常用】一步到位：拉取（如果需要）+ 创建 + 运行
+podman run hello-world
+
+# 5. 运行一个容器，并在它退出后自动删除它（常用于临时任务）
+podman run --rm hello-world
+```
+
+### 总结
+
+您可以说 **`podman run hello-world` 创建并运行了一个 `hello-world` 容器**。
+
+这个容器是临时的，它的唯一使命就是执行 `hello-world` 镜像里定义的程序（输出一段文字），任务完成，容器生命周期也就结束了。之后这个容器虽然已经停止，但它的记录仍然存在（除非你加了 `--rm` 参数），你可以用 `podman ps -a` 看到它。
