@@ -1,2 +1,0 @@
-patchedDependencies:
-  '@mintlify/prebuild': patches/@mintlify__prebuild.patch
