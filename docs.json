@@ -25,9 +25,7 @@
             "group": "基础语法",
             "pages": [
               "contents/python/var-type",
-              "contents/python/variable",
-              "contents/python/data-type",
-               "contents/python/operators",
+               "contents/python/operator-statement",
               "contents/python/statement",
               "contents/python/errors",
               "contents/python/function",
@@ -48,7 +46,8 @@
             "group": "高级进阶",
             "pages": [
               "contents/python/advance/lang-type",
-              "contents/python/advance/interpreter"
+              "contents/python/advance/interpreter",
+              "contents/python/advance/datastructure"
              
             ]
           },
