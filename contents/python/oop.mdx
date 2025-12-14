@@ -2,154 +2,135 @@
 title: 面向对象
 ---
 
-Python从设计之初就是一门面向对象的语言，如果你以前没有接触过面向对象的编程语言，那你可能需要先了解一些面向对象语言的一些基本特征，在头脑里头形成一个基本的面向对象的概念，这样有助于你更容易的学习Python的面向对象编程。
+看看周围真实世界，发现身边有很多对象如车、狗、人等等，它们都有自己的状态和行为。拿一条狗来举例，它的状态有：名字、品种、颜色，行为有：叫、摇尾巴和跑。根据这个我们可以将其进行抽象归类（模具）！
 
-现在让我们深入了解什么是对象。看看周围真实的世界，会发现身边有很多对象，车，狗，人等等。所有这些对象都有自己的状态和行为。
-
-拿一条狗来举例，它的状态有：名字、品种、颜色，行为有：叫、摇尾巴和跑。
-
-对比现实对象和软件对象，它们之间十分相似。
-
-软件对象也有状态和行为。软件对象的状态就是属性，行为通过方法体现。
-
-• **类**：类是一个模板，它描述一类对象的行为和状态。
-• **对象**：对象是类的一个实例，有状态和行为。
+* **类**：类是一个模板，它描述一类对象的行为和状态。
+* **对象**：对象是类的一个实例，有状态和行为。
 
 例如，一条狗是一个对象，它的状态有：颜色、名字、品种；行为有：摇尾巴、叫、吃等。
 
 ![](https://img.dingshaohua.com/doc-python/oop-20251204003420.jpg)
 
-通过上图创建一个简单的类来理解下 Python 中类的定义：
+通过上图创建一个简单的类来理解下 Python 中类和对象：我们定义了个狗类，基于它创建了两个具体的狗（对象），并且分别让它们跑和睡！
 
-```python
+```py
 class Dog:
-
-		# 构造方法
-    def __init__(self, name, breed, colour, size):
+    def __init__(self, name, breed, color):
         self.name = name
-        self.colour = colour
-        self.size = size
         self.breed = breed
-    
-
+        self.colour = color
     def eat(self):
         pass
- 
-    def bark(self):
-        pass
-
     def run(self):
         pass
-
     def sleep(self):
         pass
+    
+dog1=Dog('旺财','哈士奇','白色')
+print(dog1.breed)
+dog1.run()
+
+dog2=Dog('小花','拉布拉多','棕色')
+dog2.sleep()
 ```
 
 ## 构造函数
+构造函数作用就是用来初始化对象，当你在创建一个对象的时候（如上边的`Dog(...)`），就会自动调用它。通过实例化过程透传的参数，可以在定义对象的时候就设置一些初始化状态。
 
-每个类都有构造方法。如果没有显式地为类定义构造方法，会继承自父类 Object 的构造（不能传递任何参数的构造）！
+python中构造方法的名称必须是`__init__`。
 
-在创建一个对象的时候，都要调用构造方法来把对象初始化。构造方法的名称必须是`__init__`
-
-## **创建对象**
+## 创建对象
 
 对象是根据类创建的。在Pytho中，使用关键字 `类名()`来创建一个新的对象。
 
-创建对象需要以下三步：
-
-- **声明**：声明一个对象，包括对象名称和对象类型。
-- **实例化**：使用`类名()`来创建一个对象。
-- **初始化**：创建对象时，会调用构造方法初始化对象。
-
-创建一个对象的过程，也叫做这个类的**实例化**，此对象也叫做这个类的实例
-
-比如我基于上诉的狗类，创建一个我的小狗
+创建一个对象的过程，也叫做这个类的**实例化**，此对象也叫做这个类的实例，比如我基于上诉的狗类，创建一个我的小狗
 
 ```python
-my_dog = Dog("旺财","哈士奇","灰色","中型犬" )
+Dog('旺财','哈士奇','白色')
 ```
 
-## 类成员
+## 类里都有啥
+一般情况下，一个类里包含
+* 构造函数，构造函数内部定义了一些属性并设置赋值，用于映射此类对象的状态
+* 一些其它普通函数，用于映射此类对象的行为
 
-类有哪些构成呢，也就是有什么成员呢？
-
-只有两种东西：属性和方法（含特殊的构造方法）。
-
-按照所属，可以给属性和方法划分两大类，属于类本身的成员，还是给实例化后对象用的成员：类成员（也叫静态）和实例成员。
-
-如下列子，我们定义了个手机类，然后我基于此类生产创建了个手机对象 `my_phone` ，并且调用打电话的方法，然后修改了手机类的版本，并答疑
-
-```python
-class Phone:
-    def __init__(self, name, color, brand):
-        # 实例成员-属性
+```py
+# 类
+class Dog:
+    # 构造函数
+    def __init__(self, name, breed):
+        # 属性
         self.name = name
-        self.color = color
-        self.brand = brand
-    
-    # 实例成员-方法
-    def call(self):
-        print(self.name+'开始打电话')
-    
-    # 类成员-属性
-    version = '1.0.0'
+        self.breed = breed
+    # 普通函数
+    def eat(self):
+        pass
 
-    # 类成员-方法
-    @classmethod
-    def set_version(self,v):
-        Phone.version = v
+# 对象
+my_dog=Dog('旺财','哈士奇')
+print(my_dog.name) # 获取对象的状态
+my_dog.eat() # 对象做出行为动作
+```
+---
 
-my_phone = Phone('我的手机', '红色', '华为')
-my_phone.call()
-print(my_phone.version)
-Phone.set_version('2.0.0')
-print(Phone.version)
+观察上上边你可能会发现，无论是属性还是方法，都需要创建一个对象去使用。可在有些情况下我们并不需要总如此，比如大部分的工具类
+```py
+class Calculator:
+    # 静态属性
+    varsion=1.0
+    # 静态函数
+    @staticmethod
+    def add(x,y):
+        return x+y
+
+    
+print(Calculator.varsion) # 打印计算器版本
+Calculator.add(1,2) # 计算器执行加法行为
 ```
 
-有一点需要注意，对象可以访问类成员，但是类成员不能访问对象成员
+也就是说：类中的内容大致可以分为两种情况，一种是为对象服务的 叫做实例成员，一种是为类本身服务的叫做静态成员。
 
 ## 继承
+在面向对象的程序设计中，当我们定义一个class的时候，可以从某个现有的class继承，新的class称为子类，而被继承的class称为父类。
 
-Python 支持类的继承，如果一种语言不支持继承，类就没有什么意义。
+比如，我们已经编写了一个名为`Animal`的class，有一个`run()`方法可以直接打印：
 
 ```python
-#类定义
-class people:
-    #定义构造方法
-    def __init__(self,n,a,w):
-        self.name = n
-        self.age = a
-        self.weight = w
-    def speak(self):
-        print("%s 说: 我 %d 岁。" %(self.name,self.age))
-    def eat(self):
-        print("%s 说: 我在吃饭"%(self.name))
- 
-#单继承示例
-class student(people):
-    def __init__(self,n,a,w,g):
-        #调用父类的构函
-        people.__init__(self,n,a,w)
-        self.grade = g
-    #覆写父类的方法
-    def speak(self):
-        print("%s 说: 我 %d 岁了，我在读 %d 年级"%(self.name,self.age,self.grade))
- 
- 
-s = student('ken',10,60,3)
-s.eat() # 调用父类方法
-s.speak()
-print(type(s)) # 输出为 <class '__main__.student'>
-print(isinstance(s, people))  # True
+class Animal(object):
+    def run(self):
+        print('Animal is running...')
 ```
 
-另外，python 支持多继承！`class Xx(Base1, Base2)`
-
-## **访问控制**
-
-带有 `__xx` 的属性或方法，属于私有成员，外部不可直接访问
+当我们需要编写`Dog`和`Cat`类时，就可以直接从`Animal`类继承：如下对于`Dog`来说，`Animal`就是它的父类，对于`Animal`来说，`Dog`就是它的子类。`Cat`和`Dog`类似。
 
 ```python
+class Dog(Animal):
+    pass
+
+class Cat(Animal):
+    pass
+```
+
+
+
+继承有什么好处？最大的好处是子类获得了父类的全部功能。由于`Animal`实现了`run()`方法，因此，`Dog`和`Cat`作为它的子类，什么事也没干，就自动拥有了`run()`方法：
+
+```python
+dog = Dog()
+dog.run()
+
+cat = Cat()
+cat.run()
+
+# 运行结果如下：
+# Animal is running...
+# Animal is running...
+```
+
+## 访问限制
+带有 `__xx` 的属性或方法，属于私有成员，外部不可直接访问。
+这样就确保了外部代码不能随意修改对象内部的状态，通过访问限制的保护，代码更加健壮。
+```py
 class people:
     def __init__(self,n,a,w):
         self.name = n
@@ -164,3 +145,11 @@ p = people('张三',10,60)
 print(p.name)  # 输出：张三
 print(p.__weight)  # 报错：people' object has no attribute '__weight'
 ```
+
+
+## 总结
+类和对象 是 Python 面向对象的思想的具体实现。
+
+实际上在大部分情况下，我们不使用类也能完成功能。但是出于良好的编程思想，我们还是尽可能的将自己程序代码提高一个维度！
+
+毕竟代码能不能跑（功能实现）和代码写得好不好（编程思想）是两码事。

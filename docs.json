@@ -3,88 +3,89 @@
   "theme": "aspen",
   "name": "爱学习的丁",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#6366F1",
+    "light": "#6366F1",
+    "dark": "#6366F1"
   },
   "favicon": "/logo/logo.svg",
   "navigation": {
-    "tabs": [
+    "products": [
       {
-        "tab": "Python",
-        "groups": [
+        "product": "Python 教程",
+        "tabs": [
           {
-            "group": "快速开始",
-            "pages": [
-              "contents/python/index"
+            "tab": "Python",
+            "groups": [
+              {
+                "icon": "rocket",
+                "group": "初入江湖",
+                "pages": ["contents/python/index"]
+              },
+              {
+                "icon": "seedling",
+                "group": "基础语法",
+                "pages": [
+                  "contents/python/var-type",
+                  "contents/python/operator-statement",
+                  "contents/python/function",
+                  "contents/python/oop",
+                  "contents/python/module",
+                  "contents/python/decorator",
+                  "contents/python/errors",
+                  "contents/python/venv",
+                  "contents/python/io",
+                  "contents/python/env",
+                  "contents/python/cli-arg",
+                  "contents/python/subprocess",
+                  "contents/python/os",
+                  "contents/python/sys"
+                ]
+              },
+              {
+                "icon": "bolt",
+                "group": "高级进阶",
+                "pages": [
+                  "contents/python/lang-type",
+                  "contents/python/interpreter",
+                  "contents/python/datastructure",
+                  "contents/python/print"
+                ]
+              }
             ]
           },
           {
-            "group": "基础语法",
-            "pages": [
-              "contents/python/var-type",
-              "contents/python/operator-statement",
-              "contents/python/function",
-              "contents/python/oop",
-              "contents/python/module",
-              "contents/python/decorator",
-              "contents/python/errors",
-              "contents/python/venv",
-              "contents/python/io",
-              "contents/python/env",
-              "contents/python/cli-arg",
-              "contents/python/subprocess",
-              "contents/python/os",
-              "contents/python/sys"
+            "tab": "Pytest",
+            "groups": [
+              {
+                "group": "快速开始",
+                "pages": [
+                  "contents/python/pytest/index",
+                  "contents/python/pytest/context",
+                  "contents/python/pytest/autorun",
+                  "contents/python/pytest/cli-arg",
+                  "contents/python/pytest/fixture",
+                  "contents/python/pytest/mark"
+                ]
+              }
             ]
-          },
-          {
-            "group": "高级进阶",
-            "pages": [
-              "contents/python/advance/lang-type",
-              "contents/python/advance/interpreter",
-              "contents/python/advance/datastructure"
-            ]
-          },
-          {
-            "group": "三方包-Pytest",
-            "pages": [
-              "contents/python/pytest/index",
-              "contents/python/pytest/context",
-              "contents/python/pytest/autorun",
-              "contents/python/pytest/cli-arg",
-              "contents/python/pytest/fixture",
-              "contents/python/pytest/mark"
-            ]
-          },
-          {
-            "group": "三方包-XML",
-            "pages": ["contents/python/xml"]
           }
         ]
       },
       {
-        "tab": "Podman",
-        "groups": [
+        "product": "React 教程",
+        "tabs": [
           {
-            "group": "快速开始",
-            "pages": ["contents/podman/index", "contents/podman/install"]
+            "tab": "React",
+            "groups": [
+              {
+                "icon": "rocket",
+                "group": "初入江湖",
+                "pages": ["contents/react/index"]
+              }
+            ]
           },
           {
-            "group": "RustDesk",
-            "pages": ["contents/podman/rustdesk/index"]
-          }
-        ]
-      },
-      {
-        "tab": "React",
-        "groups": [
-          {
-            "group": "快速开始",
-            "pages": ["contents/react/index"]
-          },
-          {
-            "group": "笔记心得",
+            "tab": "笔记心得",
             "pages": [
               "contents/react/note/index",
               "contents/react/note/init-state"
@@ -93,11 +94,17 @@
         ]
       },
       {
-        "tab": "其它",
+        "product": "Podman 教程",
         "groups": [
           {
-            "group": "述职报告",
-            "pages": ["contents/other/index", "contents/other/v2"]
+            "icon": "rocket",
+            "group": "初入江湖",
+            "pages": ["contents/podman/index", "contents/podman/install"]
+          },
+          {
+            "icon": "seedling",
+            "group": "RustDesk",
+            "pages": ["contents/podman/rustdesk/index"]
           }
         ]
       }
