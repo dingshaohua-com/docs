@@ -16,22 +16,19 @@
           {
             "group": "快速开始",
             "pages": [
-              "contents/python/index",
-              "contents/python/install",
-              "contents/python/try-use"
+              "contents/python/index"
             ]
           },
           {
             "group": "基础语法",
             "pages": [
               "contents/python/var-type",
-               "contents/python/operator-statement",
-              "contents/python/statement",
-              "contents/python/errors",
+              "contents/python/operator-statement",
               "contents/python/function",
-               "contents/python/oop",
+              "contents/python/oop",
               "contents/python/module",
-               "contents/python/decorator",
+              "contents/python/decorator",
+              "contents/python/errors",
               "contents/python/venv",
               "contents/python/io",
               "contents/python/env",
@@ -39,7 +36,6 @@
               "contents/python/subprocess",
               "contents/python/os",
               "contents/python/sys"
-             
             ]
           },
           {
@@ -48,7 +44,6 @@
               "contents/python/advance/lang-type",
               "contents/python/advance/interpreter",
               "contents/python/advance/datastructure"
-             
             ]
           },
           {
@@ -64,11 +59,8 @@
           },
           {
             "group": "三方包-XML",
-            "pages": [
-              "contents/python/xml"
-            ]
+            "pages": ["contents/python/xml"]
           }
-         
         ]
       },
       {
@@ -76,16 +68,11 @@
         "groups": [
           {
             "group": "快速开始",
-            "pages": [
-              "contents/podman/index",
-               "contents/podman/install"
-            ]
+            "pages": ["contents/podman/index", "contents/podman/install"]
           },
           {
             "group": "RustDesk",
-            "pages": [
-              "contents/podman/rustdesk/index"
-            ]
+            "pages": ["contents/podman/rustdesk/index"]
           }
         ]
       },
@@ -94,17 +81,15 @@
         "groups": [
           {
             "group": "快速开始",
-            "pages": [
-              "contents/react/index"
-            ]
+            "pages": ["contents/react/index"]
           },
-         {
-          "group": "笔记心得",
-          "pages": [
-            "contents/react/note/index",
-            "contents/react/note/init-state"
-          ]
-         }
+          {
+            "group": "笔记心得",
+            "pages": [
+              "contents/react/note/index",
+              "contents/react/note/init-state"
+            ]
+          }
         ]
       },
       {
@@ -112,10 +97,7 @@
         "groups": [
           {
             "group": "述职报告",
-            "pages": [
-              "contents/other/index",
-              "contents/other/v2"
-            ]
+            "pages": ["contents/other/index", "contents/other/v2"]
           }
         ]
       }
@@ -127,15 +109,14 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   }
 }
-

@@ -1,7 +1,8 @@
 ---
-title: 前言
+title: 快速开始
 ---
 
+## 前言
 ![](https://img.dingshaohua.com/doc-python/python3-best-doc-20251212000109.webp)
 {/* ![](https://img.dingshaohua.com/doc-python/logo-20251203203922.png) */}
 
@@ -17,3 +18,82 @@ title: 前言
 
 
 {/* https://liaoxuefeng.com/books/python */}
+
+## 安装
+计算机硬件只能执行机器语言。Python作为高级语言，需要Python解释器来翻译和执行。因此我们需要安装Python环境（主要是解释器），才能在电脑上运行Python代码！
+
+先去[官网](https://www.python.org/downloads)，下载对应的安装包！
+
+![](https://img.dingshaohua.com/doc-python/download-20251203204500.png)
+
+**win**      
+
+win下记得勾选上 注入环境变量，不然后续还得自己配，最后点击 `Install Now` 即可！
+
+![](https://img.dingshaohua.com/doc-python/install-20251203205003.png)
+
+打开终端输入如下 ，返回类似`Python 3.14.0`，即代表安装成功！
+```bash
+py --version
+```
+
+**mac**   
+
+mac下一直点击下一步即可安装，完成后打开终端输入如下，返回类似`Python 3.14.0`，即代表安装成功！
+
+```bash
+python3 --version
+```
+
+
+## 快来试试
+
+
+### 两种模式
+Python 程序的执行 有两种方式，交互模式 和 命令行模式！
+
+**命令行模式**   
+
+命令行脚本是最常用的方式，即打开终端输入并回车 `python3 first_demo.py`，即可看到此 python 脚本执行结果！
+
+```python
+# first_demo.py
+a=1
+b=2
+print(a+b)
+```
+
+
+
+**交互模式**   
+
+终端中输入 `python3`并回车，既启动 Python 交互模式，交互模式直接输入代码按回车，就可以立刻得到代码执行结果。按下 `control + d` 可退出此模式！
+
+![](https://img.dingshaohua.com/doc-python/use-by-terminal-20251203205451.webp)
+
+
+
+
+### 编辑器
+
+在实际开发中，我们一般是在编辑器中书写并运行 Python ，而编辑器通常都会提供相关的扩展插件来对开发者友好！
+
+比如 在VsCode中，我们可以就有相关 Python 插件，安装完成后其右上角会多出一个三角形按钮，点击即可直接运行！
+
+![](https://img.dingshaohua.com/doc-python/plugin-for-vscode-20251203205451.png)
+
+
+
+![](https://img.dingshaohua.com/doc-python/use-by-vscode-20251203205451.webp)
+
+### 输入与输出
+输入/输出是 Python 中最基本也最常用的交互方式，我们先熟悉它们，方便后续的学习！
+
+`print` 是 Python 提供的输出的方法，尝试输入 `print('你好世界')` 并回车执行，即可看到 `你好世界` 输出到控制台！
+![](https://img.dingshaohua.com/doc-python/input-20251212013245.gif)
+
+Python 内置了`input`函数，用于从标准输入（既键盘）读入文本。
+```python
+str = input("请输入：")
+print ("你输入的内容是: ", str)
+```
