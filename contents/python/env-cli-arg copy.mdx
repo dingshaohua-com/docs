@@ -1,8 +1,6 @@
 ---
 title: Env与Cli参数
 ---
-import { Divider } from '../../components/divider';
-
 
 ## 环境变量
 当前操作系统在启动进程时传给它的一组“键-值”配置 就是所谓的环境变量。   
@@ -12,7 +10,7 @@ import { Divider } from '../../components/divider';
 另外在三方程序进程中也提供了获取环境变量的方法，如 node 的`process.env`和 java 的`System.getenv("KEY")`，当然 python 也内置了获取环境变量的方法，python 中的环境变量是有 内置模块 [OS](https://www.runoob.com/python3/python3-os-file-methods.html) 提供能力！
 
 
-## 获取环境变量
+### 获取环境变量
 
 ```python
 import os
@@ -40,7 +38,7 @@ os.environ['MY_VAR'] = 'my_value'
 
 
 
-## Env 文件
+### Env 文件
 一般情况下，在我们开发过程中喜欢把配置文件放在一个单独的本项目的环境变量文件中 如根目录的 .env，然后通过程序加载这个文件内容到本进程的环境变量中。
 ```
 APP_ENV=production
@@ -61,15 +59,13 @@ print(os.getenv('APP_NAME'))
 * 生命周期：随当前进程结束而消失。
 * 可见性：只有在加载之后由该进程创建的子进程会继承这些变量。
 
-<div className='border-y-2 border-blue-200 flex justify-center items-center'>
-<h2 className='p-0 m-0'> --==分割线🌸分割线==--</h2>
-</div>
-
 ## 命令行参数
 
-command-line argument ，简写 cli arg。命令行参数是指： 在执行程序时，通过命令行界面传递给程序的额外信息或选项！
+command-line argument 中文 命令行参数 的意思，简写 cli arg
 
-## 使用 argv 获取
+命令行参数是指： 在执行程序时，通过命令行界面传递给程序的额外信息或选项！
+
+### 使用 argv 获取
 
 内置的 sys 模块提供了一个 argv 的方法，可以获取当前执行脚本信息
 
@@ -82,7 +78,7 @@ print(sys.argv)
 py run-test.py --abc prod
 ```
 
-## 使用 argparse 获取
+### 使用 argparse 获取
 
 sys.argv 方式获取的参数太原始和简陋了，不方便拿来即用，好在官方有提供了一个！
 
@@ -102,9 +98,9 @@ args = parser.parse_args()
 print(args.abc)
 ```
 
-### 帮助
+#### 帮助
 
-当运行脚本加上 `--help` 时，会打印当前脚本支持的所有参数及说明（不会执行脚本内容）。
+当运行脚本加上 `--help` 参数时，会打印当前脚本支持的所有参数及说明（不会执行脚本内容）。\
 `--help` 这个命令参数与 `argparse` 无关，是 python 预知的一个参数。
 
 ```python
@@ -121,17 +117,19 @@ args = parser.parse_args()
 ![](https://img.dingshaohua.com/doc-python/cli-arg-help-20251205002325.jpg)
 
 <Note>
-  注意： `--help` 的行为是在解析参数（parse_args()、parse_known_args()、parse_intermixed_args()）时 触发的。
+  注意： `--help` 的行为是在解析参数（parse_args() / parse_known_args() /
+  parse_intermixed_args()）时 触发的。
 </Note>
 
 
 
-### 参数说明
+#### 参数说明
 
-**description：在执行 --help 输出里，写一段这个程序说明文字。**
+**description**
 ```python
 ArgumentParser(description='这是段示例程序，用于学习的代码')
 ```
+构造参数 description 就是 帮你在执行 `--help` 输出里，写一段这个程序是干嘛的说明文字。
 ```bash
 py run-test.py --help       
 usage: run-test.py [-h]
@@ -144,7 +142,10 @@ options:
 
 
 
-**action：告诉 argparse 解析此参数时，怎么处理（默认值为 store，存到 `args.xxx` 里）**
+**action**   
+
+用来告诉 `argparse`：解析到这个参数时，要“怎么处理”它。\
+默认值为 `store`：把值存到 `args.xxx` 里。
 
 ```python
 # store_true / false （这个参数不用带值，只要写上这个选项就变成 True/False）
@@ -158,8 +159,7 @@ parser.add_argument('--no-cache', action='store_false')
 parser.add_argument('--host', action='append')
 
 # store_const（存一个固定常量）
-# --mode-dev → args.mode == 'dev'，
-# 一般和 const + dest 配合，做互斥模式的快捷开关
+# --mode-dev → args.mode == 'dev'，一般和 const + dest 配合，做互斥模式的快捷开关
 parser.add_argument('--mode-dev',
 action='store_const', const='dev', dest='mode')
 
@@ -168,7 +168,10 @@ action='store_const', const='dev', dest='mode')
 parser.add_argument('-v', '--verbose', action='count', default=0)
 ```
 
-**default：默认值**   
+**default**   
+
+默认值
+
 ```python
 parser.add_argument('--abc', default='hello')
 args = parser.parse_args()
@@ -178,14 +181,17 @@ print(args.abc)
 py run-test.py
 ```
 
-**help：参数的说明文字，显示在 `--help` 输出里**   
+**help**   
+
+参数的说明文字，显示在 `--help` 输出里
 
 ```python
 parser.add_argument('--abc', default='hello', help='这就是个随意写的参数')
 ```
 
 
-**choices：限制参数取值范围，参数只能是这几个值里的一个**   
+**choices**   
+限制参数取值范围，参数只能是这几个值里的一个，否则就报错并打印使用方式（usage） 
 ```python
 from argparse import ArgumentParser
 

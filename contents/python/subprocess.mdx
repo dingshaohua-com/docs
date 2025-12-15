@@ -3,12 +3,11 @@ title: 子进程
 ---
 
 ## 什么是子进程
-当前正在执行的程序叫做主进程，比如你运行 `python xxx.py`   
-任何进程（包括“主进程”自己）要跑外部工具（git、ffmpeg、ls等等外部程序），都必须启动一个“子进程”来跑它。
+当前正在执行的程序叫做主进程，比如你运行 `python xxx.py`。   
 
-比如 Node 的 child_process、java的 ProcessBuilder 等都是用于开启子进程，当然 python也内置了开启子进程方法 `subprocess`
+任何进程（包括“主进程”自己）要跑外部工具（git、ffmpeg、ls等等外部程序），都必须启动一个“子进程”来跑它，python内置了开启子进程方法 `subprocess`！
 
-比如我要获取当前目录信息，在linux上是打开终端程序输入 `ls -l`，所以我们如下代码，就代替你执行这个操作
+如获取当前目录信息，在linux上是终端执行 `ls -l`，而如下代码则是代替你执行这个操作。
 ```python
 import subprocess
 
@@ -16,13 +15,9 @@ cmd = ["ls", "-l"]  # win下是["cmd", "/c", "dir"]
 subprocess.run(cmd)
 ```
 
-再比如调用别的程序、脚本
+再比如调用新的进程执行python，甚至其它程序。
 ```python
 subprocess.run(["python", "other_script.py", "--arg", "123"])
-```
-
-甚至你还可以拿它来运行java
-```python
 subprocess.run(["jre/bin/java", "-jar", "test.jar"])
 ```
 
@@ -42,23 +37,22 @@ print(result.stdout)
 ```
 
 
-## 子进程的执行结果
+## 执行结果
 
 ### stdout与stderr
 调用 `subprocess.run()` 时，会返回一个 `CompletedProcess` 对象（表示该子进程已经执行完成的结果快照），其中常用属性有：
 
 - `result.stdout`：子进程的标准输出（standard output）
 - `result.stderr`：子进程的标准错误输出（standard error）
-- `result.returncode`：子进程的退出码，通常 `0` 表示成功，非 0 表示失败
 
-> 约定俗成的用法（程序员一般会这么做）：
-> - 正常结果一般写到 `stdout`（如对应自己编程中 console.log）
-> - 错误信息、警告等一般写到 `stderr` （如对应自己编程中 console.error）
->
-> 但这只是惯例，不强制：成功时也可能有 `stderr` 输出，失败时也可能往 `stdout` 输入东西。
+<Note>
+约定俗成的用法（程序员一般会这么做）：   
+- 正常结果一般写到 `stdout`（如对应自己编程中 console.log）   
+- 错误信息、警告等一般写到 `stderr` （如对应自己编程中 console.error）  
 
+但这只是惯例，不强制，成功时也可能有 `stderr` 输出，失败时也可能往 `stdout` 输出。
 
-这是因为操作系统只负责给进程准备三个管道：stdin标准输入、stdout标准输出、stderr标准错误，    
+因为操作系统只负责给进程准备三个管道：stdin标准输入、stdout标准输出、stderr标准错误，    
 它不决定写什么内容，也不决定“啥是成功/失败”。
 系统只是把进程写入 stdout/stderr 的内容送到对应的地方（终端、管道、被 Python/Node 读取等）。
 
@@ -67,55 +61,51 @@ print(result.stdout)
 * Node 里是你/库调用 console.log / console.error
 * Java 里：System.out.println() 写到 stdout，System.err.println() 写到 stderr
 * 各种命令行工具（git、ls、curl、npm、node 自己）内部也会写 stdout/stderr
+</Note>
+
+
+
 
 ### returncode
-`result.returncode` 是**子进程的退出码（exit code）**，用来表示这个命令/程序最后是怎么结束的。
-
-常见约定：
-
-- `0`：表示成功（正常结束）
-- 非 `0`：表示失败或某种异常情况（具体含义看这个命令/程序自己的约定）
-
-举例（Python）：
-
+`res.returncode` 是**子进程的退出码（exit code）**，用来表示这个命令/程序最后是怎么结束的，通常 0 表示成功，非 0 表示失败，以 Python 举例：
 ```python
 import subprocess
 
-result = subprocess.run(["ls", "not_exist"], capture_output=True, text=True)
-print(result.returncode)  # 操作结果（成功/失败/其它）
-print(result.stdout)      # 成功信息
-print(result.stderr)      # 错误信息
+cmd=["ls", "not_exist"]
+res = subprocess.run(cmd, capture_output=True, text=True)
+print(res.returncode)  # 操作结果（成功/失败/其它）
+print(res.stdout)      # 成功信息
+print(res.stderr)      # 错误信息
 ```
 
-谁设的这个数字？
+<Note>
+谁设的这个数字？同样也有约定俗成，在子进程里由程序自己决定的。
 
-- 在子进程里由程序自己设：
   - C：`return 0;` / `return 1;` / `exit(1);`
   - Python：`sys.exit(0)` / `sys.exit(1)`
   - Node：`process.exit(0)` / `process.exit(1)`
 
-父进程（如 Python）只是把这个数字取出来放到 `result.returncode`，方便判断命令是否“成功”：
+父进程只是把这个数字取出来放到 `result.returncode`，方便判断命令是否“成功”：
 
 - “成功/失败”主要看 `returncode`
 - 输出内容是什么，主要看 `stdout` / `stderr` 写了什么
+</Note>
 
 
 ## 来个实际例子
 单元测中 利用断言，来让子进程收集错误信息
-
-other_script.py 代码如下
-```
+```py title="other_script.py"
 assert 1==2
 ```
 
-run_test.py 主程序如下
-```python
-result = subprocess.run(["py", "./other_script.py"], capture_output=True, text=True)
-if result.stdout:
-    print("STDOUT:", result.stdout)
-if result.stderr:
-    print("STDERR:", result.stderr)
-print(f"pytest 返回码: {result.returncode}")
+```py title="run_test.py"
+cmd=["py", "./other_script.py"]
+res = subprocess.run(cmd, capture_output=True, text=True)
+if res.stdout:
+    print("STDOUT:", res.stdout)
+if res.stderr:
+    print("STDERR:", res.stderr)
+print(f"pytest 返回码: {res.returncode}")
 ```
 
 最终控制台输出如下
