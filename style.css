@@ -48,3 +48,13 @@ html {
 html.dark * {
   scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
+
+/* 主题色渐变文字 - 自动同步配置中的主题色 */
+.primary-gradient-text {
+  background: linear-gradient(to right, #EC4899, #F472B6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #EC4899; /* 回退颜色，如果渐变不支持 */
+  display: inline-block; /* 确保渐变正确应用 */
+}

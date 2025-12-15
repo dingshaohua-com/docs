@@ -3,11 +3,13 @@
   "theme": "aspen",
   "name": "爱学习的丁",
   "colors": {
-    "primary": "#6366F1",
-    "light": "#6366F1",
-    "dark": "#6366F1"
+    "primary": "#EC4899",
+    "light": "#EC4899",
+    "dark": "#EC4899"
   },
   "favicon": "/logo/logo.svg",
+  "basePath": "/contents",
+  "root": "contents",
   "navigation": {
     "products": [
       {
