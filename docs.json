@@ -33,8 +33,7 @@
                   "contents/python/decorator",
                   "contents/python/venv",
                   "contents/python/io",
-                  "contents/python/env",
-                  "contents/python/cli-arg",
+                  "contents/python/env-cli-arg",
                   "contents/python/subprocess",
                   "contents/python/os",
                   "contents/python/sys"

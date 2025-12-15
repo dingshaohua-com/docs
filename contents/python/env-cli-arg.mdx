@@ -1,12 +1,72 @@
 ---
-title: "命令行参数"
+title: Env与Cli参数
 ---
+
+## 环境变量
+当前操作系统在启动进程时传给它的一组“键-值”配置。   
+在Linux/macOS系统中（终端上） 通过`echo $VAR`，windows 上通过`env:VAR`，
+三方程序进程中也提供了获取环境变量的方法，如node 的`process.env`和java 的`System.getenv("KEY")`
+
+当然python 也内置了获取环境变量的方法。
+python 中的环境变量是有 内置模块 [OS](https://www.runoob.com/python3/python3-os-file-methods.html) 提供能力！
+
+
+### 获取环境变量
+
+```python
+import os
+
+# 获取所有环境变量
+print(os.environ)
+
+## 获取指定环境变量（不存在会报错）
+print(os.environ['HOME'])
+
+## 获取指定环境变量（不存在则为 None）
+print(os.environ.get('HOME'))
+
+
+## 获取指定环境变量（os.environ.get(key, default) 的封装）
+print(os.getenv('HOME'))
+
+## 默认值
+os.getenv('someKey', 'xxx') # 当环境变量 someKey 不存在时，会返回 'xxx'。
+
+## 设置环境变量（仅当前进程和子进程可见）
+os.environ['MY_VAR'] = 'my_value'
+```
+
+
+
+
+### Env 文件
+一般情况下，编程语言都喜欢把配置文件放在一个单独的本项目的环境变量文件中（一般是根目录的 .env），然后通过程序加载这个文件内容到环境变量中。
+```
+APP_ENV=production
+APP_NAME=啥也不是系统
+```
+
+python也不例外，python 中也可以使用 [python-dotenv](https://pypi.org/project/python-dotenv/) 库来加载 .env 文件中的环境变量到当前进程中，这样就可以在代码中直接使用 os.getenv("VAR") 读取 .env 中的键值
+
+```python
+from dotenv import load_dotenv; 
+
+load_dotenv()
+print(os.getenv('APP_NAME'))
+```
+
+注意的是这并不是“注入到系统里”。python-dotenv 只是把 .env 里的键值加载进当前 Python 进程的环境（os.environ）。要点：
+* 作用范围：仅当前进程；不会修改操作系统全局环境，也不影响启动它的父进程/终端。
+* 生命周期：随当前进程结束而消失。
+* 可见性：只有在加载之后由该进程创建的子进程会继承这些变量。
+
+## 命令行参数
 
 command-line argument 中文 命令行参数 的意思，简写 cli arg
 
 命令行参数是指： 在执行程序时，通过命令行界面传递给程序的额外信息或选项！
 
-## 使用 argv 获取
+### 使用 argv 获取
 
 内置的 sys 模块提供了一个 argv 的方法，可以获取当前执行脚本信息
 
@@ -19,7 +79,7 @@ print(sys.argv)
 py run-test.py --abc prod
 ```
 
-## 使用 argparse 获取
+### 使用 argparse 获取
 
 sys.argv 方式获取的参数太原始和简陋了，不方便拿来即用，好在官方有提供了一个！
 
@@ -39,7 +99,7 @@ args = parser.parse_args()
 print(args.abc)
 ```
 
-### 帮助
+#### 帮助
 
 当运行脚本加上 `--help` 参数时，会打印当前脚本支持的所有参数及说明（不会执行脚本内容）。\
 `--help` 这个命令参数与 `argparse` 无关，是 python 预知的一个参数。
@@ -64,9 +124,9 @@ args = parser.parse_args()
 
 
 
-### 参数说明
+#### 参数说明
 
-#### description
+**description**
 ```python
 ArgumentParser(description='这是段示例程序，用于学习的代码')
 ```
@@ -83,7 +143,7 @@ options:
 
 
 
-#### action
+**action**   
 
 用来告诉 `argparse`：解析到这个参数时，要“怎么处理”它。\
 默认值为 `store`：把值存到 `args.xxx` 里。
@@ -109,7 +169,7 @@ action='store_const', const='dev', dest='mode')
 parser.add_argument('-v', '--verbose', action='count', default=0)
 ```
 
-#### default
+**default**   
 
 默认值
 
@@ -122,7 +182,7 @@ print(args.abc)
 py run-test.py
 ```
 
-#### help
+**help**   
 
 参数的说明文字，显示在 `--help` 输出里
 
@@ -131,7 +191,7 @@ parser.add_argument('--abc', default='hello', help='这就是个随意写的参�
 ```
 
 
-#### choices
+**choices**   
 限制参数取值范围，参数只能是这几个值里的一个，否则就报错并打印使用方式（usage） 
 ```python
 from argparse import ArgumentParser
@@ -145,3 +205,5 @@ args = parser.parse_args()
 print(args.color)
 ```
 ![](https://img.dingshaohua.com/doc-python/cli-arg-choice-20251205005042.jpg)
+
+

@@ -2,77 +2,16 @@
 title: 虚拟环境
 ---
 
-**Python 的包管理方式确实和 Java/Node.js 很不一样**，这让从其他语言转来的开发者感到困惑。
 
 
 
-## 各语言包管理方式对比
+## 全局污染
 
-🌍 **Java (Maven/Gradle)**   
-依赖默认就是项目局部的，不需要特别指定
-
-```bash
-# 依赖始终是"项目局部"的
-# pom.xml 或 build.gradle 中声明依赖
-mvn install          # 依赖下载到项目下的 target/ 或 ~/.m2/
-gradle build         # 依赖下载到项目下的 build/ 或 ~/.gradle/
-
-```
-
-📱 **Android (Gradle)**   
-依赖天然按模块/作用域隔离
-```groovy
-// build.gradle
-dependencies {
-    implementation 'com.android.support:appcompat-v7:28.0.0'  // 项目局部
-    testImplementation 'junit:junit:4.12'                    // 测试局部
-}
-
-```
-
-
-🟢 **Node.js (npm)**   
-依赖位置也在`node_modules/` 默认在当前项目局部生效
-```bash
-# 全局安装（工具类）
-npm install -g create-react-app
-
-# 局部安装（项目依赖）- 默认
-npm install express
-# 或显式指定
-npm install --save express        # 保存到 dependencies
-npm install --save-dev jest       # 保存到 devDependencies
-
-```
-
-
-
-🐍 **Python (pip)**   
-依赖位置，如果不手动指定虚拟环境，默认则是全局
-
-```bash
-# 全局安装（系统级）
-pip install pytest
-
-# 用户级安装
-pip install --user pytest
-
-# 项目局部安装 - 需要虚拟环境！
-python -m venv venv
-source venv/bin/activate
-pip install pytest
-
-```
-
-## 原因
+Python 的包管理方式和 Java/Node等不一样，这让从其它语言转来的开发者感到困惑。
 
 - **Python** 诞生较早（1991年），当时"一个系统一个Python"是主流思想
 - **Node.js**（2009年）从设计时就考虑了多项目、多版本的需求
 - **Java** 的企业级应用背景决定了它需要严格的依赖隔离
-
-
-## 解决办法
-
 
 如果没有虚拟环境，就会出现多个项目共用一个全局的Python 环境，导致版本冲突
 
@@ -129,23 +68,15 @@ deactivate
 
 
 
-## 保存依赖信息
-默认情况下，当你安装了一个依赖后 项目并不会生成安装注入 package.json一样的依赖清单
-
-```bash
-pip install pytest
-```
-
-这就会引发一个问题：别人拿到你的代码时，不知道需要安装什么依赖。
-所以我们每次安装完后，可以手动调用一个命令来生成
+## 依赖清单
+默认情况下，当你安装了一个依赖后 项目并不会生自动生成依赖清单，就会引发一个问题：别人拿到你的代码时，不知道需要安装什么依赖。所以我们每次安装完后，可以手动调用一个命令来生成！
 
 ```bash
 (venv) pip freeze > requirements.txt
 
 ```
 
-这会创建 `requirements.txt` 文件，记录所有已安装的包，方便其他人重现环境。
-别人只需要执行一下代码即可安装所有依赖。
+这会创建 `requirements.txt` 文件，记录所有已安装的包，方便其他人重现环境，别人只需要执行一下代码即可安装所有依赖。
 ```bash
 pip install -r requirements.txt
 ```
