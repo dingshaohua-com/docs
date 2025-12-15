@@ -55,11 +55,16 @@
             "tab": "Pytest",
             "groups": [
               {
-                "group": "快速开始",
+                "icon": "rocket",
+                "group": "初入江湖",
+                "pages": ["contents/python/pytest/index"]
+              },
+              {
+                "icon": "seedling",
+                "group": "基础功能",
                 "pages": [
-                  "contents/python/pytest/index",
+                  "contents/python/pytest/test-case",
                   "contents/python/pytest/context",
-                  "contents/python/pytest/autorun",
                   "contents/python/pytest/cli-arg",
                   "contents/python/pytest/fixture",
                   "contents/python/pytest/mark"

@@ -1,30 +1,29 @@
 ---
-title: 自动测试
+title: 测试用例
 ---
-符合pytest扫描规则代码，它会自动运行，而不用你手动再调用
+
+Pytest 会自动扫描项目中以 `test_`开头或以`_test`结尾的文件，读取文件中 `test_` 开头的函数和以 `Test` 开头的类中的函数，识别为测试用例，自动执行！
 
 
-## 自动测试函数
-pytest 会自动找到了所有 `test_` 开头的函数并执行了它们！
-```python
+## 测试函数
+终端执行`pytest`, 会自动找到了所有 `test_` 开头的函数并执行了它们！
+```python title="test_demo1.py"
 def test_add():
     assert 1 + 1 == 2
 ```
 
-当你运行 `pytest test_demo.py`的时候，这个函数就会被执行！
 
 
-
-## 自动测试类
-pytest 会自动找并自动执行 TestXxx 开头的 类里的 test_xxx方法
-```py
+## 测试类
+当你运行 `pytest`的时候，`TestCalculator` 类里的 `test_add` 函数就会被执行！
+```py title="test_demo2.py"
 class TestCalculator:
     def abc(self):
         assert 1 + 1 == 2
     def test_add(self):
         assert 1 + 1 > 2
 ```
-当你运行 `pytest test_demo.py`的时候，这个TestCalculator类里的test_add函数就会被执行！
+
 
 
 
