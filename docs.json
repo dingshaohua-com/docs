@@ -35,8 +35,7 @@
                   "contents/python/io",
                   "contents/python/env-cli-arg",
                   "contents/python/subprocess",
-                  "contents/python/os",
-                  "contents/python/sys"
+                  "contents/python/os-sys"
                 ]
               },
               {
@@ -46,7 +45,8 @@
                   "contents/python/lang-type",
                   "contents/python/interpreter",
                   "contents/python/datastructure",
-                  "contents/python/print"
+                  "contents/python/print",
+                  "contents/python/xml"
                 ]
               }
             ]
