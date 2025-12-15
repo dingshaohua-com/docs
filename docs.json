@@ -8,8 +8,6 @@
     "dark": "#EC4899"
   },
   "favicon": "/logo/logo.svg",
-  "basePath": "/contents",
-  "root": "contents",
   "navigation": {
     "products": [
       {
