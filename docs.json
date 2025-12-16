@@ -64,10 +64,7 @@
                 "group": "基础功能",
                 "pages": [
                   "contents/python/pytest/test-case",
-                  "contents/python/pytest/context",
-                  "contents/python/pytest/cli-arg",
-                  "contents/python/pytest/fixture",
-                  "contents/python/pytest/mark"
+                  "contents/python/pytest/cli-arg"
                 ]
               }
             ]
