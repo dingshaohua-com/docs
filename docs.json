@@ -46,7 +46,8 @@
                   "contents/python/interpreter",
                   "contents/python/datastructure",
                   "contents/python/print",
-                  "contents/python/xml"
+                  "contents/python/xml",
+                  "contents/python/internet"
                 ]
               }
             ]
@@ -66,6 +67,7 @@
                   "contents/python/pytest/test-case",
                   "contents/python/pytest/cli-arg",
                   "contents/python/pytest/setup-teardown",
+                  "contents/python/pytest/mark",
                   "contents/python/pytest/fixture"
                 ]
               }

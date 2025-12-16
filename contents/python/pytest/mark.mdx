@@ -2,12 +2,11 @@
 title: 标记
 ---
 
-@pytest.mark 是 pytest 测试框架中的一个装饰器，用于给测试函数或测试类添加标记（marker）。   
-这些标记除了能对对测试进行分类、过滤外，还能给被装饰的函数一些额外的功能！
+`@pytest.mark` 是 Pytest 一个装饰器，用于给测试用例添加标记，这些标记除了能对对测试进行分类、过滤外，还能给被装饰的函数一些额外的功能！
 
 
 
-## 标记的分类
+## 夹具的分类
 我们按照有无功能将 标记分为： 功能性标记 和 无功能性标记 两大类
 
 | 类别 | 特点 | 主要用途 | 是否影响测试逻辑 |
@@ -16,11 +15,11 @@ title: 标记
 | **无功能性标记** | 仅添加元数据/标签 | 分类、筛选、分组 | ❌ 不影响逻辑 |
 
 
-## 无功能性标记
-pytest 的所有内置 mark 都是功能性标记，没有内置的"纯粹无功能"标记，用户自定义标记即是无功能标记！
+## 无功能性夹具
+pytest 的所有内置 mark 都是功能性标记，用户自定义标记则是无功能标记！
 
-首先我们需要 `pytest.ini` 中注册自定义的mark，以避免警告，比如：
-```ini
+首先我们需要 Pytest 配置文件中注册自定义的 mark，以避免警告如：
+```ini title="pytest.ini"
 [pytest]
 # 自定义mark
 markers =
@@ -59,7 +58,7 @@ pytest -m p0
 pytest --html=report.html --self-contained-html
 ```
 
-## 功能性标记
+## 功能性夹具
 如上所提，pytest内置了很多功能性mark供我们使用！
 ```py
 # 跳过功能
@@ -79,9 +78,8 @@ def test_addition():
     pass
 ```
 
-### 参数化测试功能
-参数化测试功能`@pytest.mark.parametrize`，是pytest内置的一个非常强大且重要的功能性标记！   
-参数化测试核心功能就是：让一个测试函数使用不同的参数运行多次！
+### 参数化标记
+`@pytest.mark.parametrize`，是pytest内置的一个非常强大且重要的功能性标记，核心功能就是：让一个测试函数使用不同的参数运行多次！
 
 ```py
 arg_values=[] # 列表：参数值列表
@@ -119,7 +117,6 @@ def test_chinese_user_info(user_info):
     # 验证中文名字（2-3个汉字）
     assert isinstance(user_info["name"], str)
     assert 2 <= len(user_info["name"]) <= 3
-    assert all('\u4e00' <= char <= '\u9fff' for char in user_info["name"])  # 验证是中文
     
     # 验证年龄范围
     assert isinstance(user_info["age"], int)
@@ -184,3 +181,13 @@ test_demo.py::test_with_ids[年轻员工-张三] ✓
 test_demo.py::test_with_ids[中年员工-李四] ✓
 test_demo.py::test_with_ids[资深员工-王五] ✓
 ```
+
+### 夹具触发标记
+借助内置 mark `@pytest.mark.usefixtures`，我们也能给测试函数触发夹具生命周期，如下：
+```py
+@pytest.mark.usefixtures("my_fixture")
+def test_fix():
+    print("测试用例执行")
+```
+
+这个我们下一章节具体讲！

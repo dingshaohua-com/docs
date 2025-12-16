@@ -2,17 +2,167 @@
 title: 夹具
 ---
 
-夹具是 pytest 提供的一个强大的工具，也是其核心功能！
+夹具是 Pytest 提供的一个强大的能力，也是其核心功能！
 
-夹具的本质就是依赖注入（Dependency Injection），通过将依赖项注入到测试函数中，这种反转控制（IoC）的方式使得你的代码更加解耦和复用。
+Pytest 依据测试函数的参数名找到同名夹具，执行该夹具函数后，将其返回结果注入到测试函数参数中，测试因此获得预先准备好的依赖 （这叫做依赖注入 Dependency Injection）；同时框架接管该依赖的整个生命周期（创建、缓存、清理），完成控制反转（Inversion of Control），使测试代码与依赖解耦、可复用且易维护。
 
-这种反转控制的方式，使得你的代码更加解耦和复用。如果之前没有接触过依赖注入的概念，这将非常难以理解！
+这种把横切逻辑抽出去的做法，和 AOP ‘分离关注点’的目标是一致的（不过 pytest 并未提供真正的 AOP 机制，如连接点、编织等，只是目标思想一直）；如果你之前没接触过 AOP，可以先把它简单理解成‘公共前置 / 后置逻辑复用’。
 
-## 夹具的定义
+以上是不是听着有点懵逼？！ 没事多来几个例子就行了
+<img src="https://img.dingshaohua.com/doc-python/confused-20251217014758.webp" alt="pytest 夹具" width={90}/>
+
+{/* **“装饰器”这个通用语法工具**确实**可以**手动实现 DI/IoC 甚至 AOP 的效果——但那是你自己写额外代码，只不过 夹具并没有利用它实现。
+
+区别一句话：
+
+- **通用装饰器**：你想干啥就写啥，**理论上**能包一层、替换返回值、塞依赖、做切面，**能力由你代码决定**。  
+- **pytest 的 `@pytest.fixture`**：只是**登记名字**，原函数**不被包裹**，pytest 后续用**参数名匹配**的方式去调用它并把返回值注入——**没用到装饰器的“包裹”能力**，DI/IoC 是框架后续流程做的（运行时 pytest 根据参数名再去找注册表，重新调用并注入返回值——这一步跟装饰器完全无关）。
+
+所以：  
+装饰器“能”做到，但 **pytest 没用它来做**。 */}
+
+
+## 应用场景
+这里举例一些常用到的场景：
+* 每个测试都要空数据库 → 夹具自动建库、 rollback，测完自动删。
+* 接口测试必须带 Token → 夹具提前帮你登录，返回 headers 直接发请求。
+* 跑慢任务想复用浏览器 → 夹具 scope="session" 只开一次 Chrome，全部用例共用。
+* 需要干净下载目录 → 夹具 tmp_path 每测新建，用完即删。
+* mock 外部天气 API → 夹具 responses.add(...) 伪造，网络请求瞬间返回假数据。
+
+## 快速入门
+```py title="test_a.py"
+import pytest
+
+# 定义一个夹具
+@pytest.fixture()
+def my_fixture(): # 记住这个夹具名
+    print("测试夹具执行")
+    return 123
+
+# 通过同名参数的方式使用（注入）夹具
+def test_fix(my_fixture):
+    print("测试用例执行,拿到夹具返回值:", my_fixture)
+```
+
+
+控制台运行后`pytest -s`输出如下：
+```bash
+=== test session starts ====
+collected 1 item
+test_a.py  测试夹具执行  测试用例执行,拿到夹具返回值:123
+.
+=== 1 passed in 0.01s ===
+```
+
+
+## 使用方式
+（即夹具怎么用）除上述通过同名参数的方式使用夹具，还可通过装饰器的方式使用夹具：
+```py title="test_a.py"
+import pytest
+
+# 定义一个夹具
+@pytest.fixture()
+def my_fixture():
+    print("测试夹具执行")
+
+# 通过装饰器的方式使用夹具
+@pytest.mark.usefixtures("my_fixture")
+def test_fix():
+    print("测试用例执行")
+```
+这不过这种方式只让夹具触发跑了一遍，适合 `无需夹具返回值` 的场景（如：只要副作用的建库、清日志等）！
+
+
+
+## 目标对象
+（即夹具给谁用）夹具除了可以用在测试函数中，还可以用在测试类中：
+```py title="test_a.py"
+# 定义一个夹具
+@pytest.fixture()
+def my_fixture():
+    print("测试夹具执行")
+
+# 类使用夹具（类中的每个方法都会被注入夹具）
+@pytest.mark.usefixtures("my_fixture")
+class TestLogin:
+    def test_fix3(self):
+        print("我是测试用例3")
+    def test_fix4(self):
+        print("我是测试用例4")
+```
+
+## 返回值
+夹具可以拥有返回值，这个返回值可以在测试用例函数中使用，上边已经举例了！
+
+## 参数
+在定义夹具时，还可以传递参数！
+### autouse
+
+`autouse=True` 确实让夹具**独立自动调用**，不再依赖于手动在测试用例的显式注入
+
 ```py
 import pytest
 
-@pytest.fixture
-def my_fixture():
-    return 123
+@pytest.fixture(autouse=True)
+def setup_and_teardown():
+    """自动为所有测试设置和清理环境"""
+    print("\n=== 测试开始: 准备环境 ===")
+    # 设置代码...
+    yield  # 分隔 setup 和 teardown
+    print("\n=== 测试结束: 清理环境 ===")
+    # 清理代码...
+
+def test_example1():
+    print("执行测试1")
+    # 自动执行 setup_and_teardown
+
+def test_example2():
+    print("执行测试2")
+    # 同样自动执行 setup_and_teardown
 ```
+autouse=True 的夹具通常用于不需要返回值的场景!
+
+
+### scope
+pytest 夹具的作用域（scope） 是它的核心特性之一，非常强大。共有4种：
+* scope="function"（默认）：每个测试函数都新建/销毁
+* scope="class"：每个测试类共享实例
+* scope="module"：每个.py文件共享实例
+* scope="session"：整个pytest运行过程共享实例
+
+```py
+import pytest
+
+# 1. function 作用域（默认） - 每个测试函数执行一次
+@pytest.fixture(scope="function")
+def func_fixture():
+    print("\n[function] 夹具执行")
+    return id(object())  # 每次返回不同ID
+
+# 2. class 作用域 - 每个测试类执行一次
+@pytest.fixture(scope="class")
+def class_fixture():
+    print("\n[class] 夹具执行")
+    return id(object())  # 同类中相同
+
+# 3. module 作用域 - 每个模块执行一次  
+@pytest.fixture(scope="module")
+def module_fixture():
+    print("\n[module] 夹具执行")
+    return id(object())  # 同模块中相同
+
+# 4. session 作用域 - 整个测试会话执行一次
+@pytest.fixture(scope="session")
+def session_fixture():
+    print("\n[session] 夹具执行")
+    return id(object())  # 全局相同
+```
+
+| 作用域 | 执行频率 | 典型适用场景 | 示例 |
+|--------|----------|------------|------|
+| **function** | 每个测试函数执行一次 | 需要完全隔离的测试数据、临时文件、独立状态 | 临时目录、测试数据生成、独立数据库事务 |
+| **class** | 每个测试类执行一次 | 类内共享的昂贵资源、相同配置的测试组 | 浏览器实例、API客户端、类级别的Mock |
+| **module** | 每个.py文件执行一次 | 模块内共享的全局状态、测试数据文件 | 配置文件加载、模块级测试数据、共享数据库连接 |
+| **session** | 整个pytest运行执行一次 | 全局共享的昂贵资源、一次性初始化 | 数据库连接池、缓存服务器、全局配置 |
+
