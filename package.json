@@ -11,6 +11,6 @@
   "license": "ISC",
   "packageManager": "pnpm@10.12.1",
   "devDependencies": {
-    "mint": "^4.2.240"
+    "mint": "^4.2.243"
   }
 }
