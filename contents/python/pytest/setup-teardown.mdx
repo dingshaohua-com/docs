@@ -1,0 +1,55 @@
+---
+title: 前置后置
+---
+
+Pytest 支持前置后置操作：测试用例执行前和后，分别执行一些操作。
+
+这在实际的自动化测试中，非常实用，比如测试用例执行前，需要先登录，测试用例执行后，需要先登出。
+
+<Note>
+注意：这些前置后置函数名是固定的，Pytest 执行时会按照方法名扫描从而开始执行。另外，若你了解其它语言或者框架 可以将 Pytest 前后置函数理解为生命周期函数或者钩子函数！
+</Note>
+
+## 函数级别
+```py title="test_a.py"
+def setup_function():
+    print("函数前置：测试开始前执行===> ",end="")
+
+def teardown_function():
+    print(" <===函数后置：测试结束后执行")
+
+def test_one():
+    assert 1 == 1
+```
+
+执行结果
+```bash
+=== test session starts ===
+collected 1 item
+test_a.py 函数前置：测试开始前执行===> . <===函数后置：测试结束后执行
+=== 1 passed in 0.00s ===
+```
+
+## 类级别
+```py title="test_a.py"
+class TestClass:
+    @classmethod
+    def setup_class(cls):
+        print("类前置：类开始前执行一次")
+    
+    @classmethod
+    def teardown_class(cls):
+        print("类后置：类结束后执行一次")
+    
+    def setup_method(self):
+        print("方法前置：每个测试方法前执行")
+    
+    def teardown_method(self):
+        print("方法后置：每个测试方法后执行")
+    
+    def test_one(self):
+        assert True
+    
+    def test_two(self):
+        assert True
+```
