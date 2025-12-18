@@ -5,11 +5,11 @@ title: 网络
 对于大多数Web开发、API调用、微服务通信，使用Http层协议工具（特别是requests库）完全足够且是正确选。只有需要低级别的网络服务（涉及到TCP/IP等）才推荐使用 Socket协议工具
 </Note>
 
-## HTTP 请求
+## HTTP 客户端
 https://httpbin.org 是一个HTTP 请求测试和调试服务，你发送什么请求给它，它就返回什么相关信息给你，非常方便用于学习和调试。
 
 
-### 简单发请求
+### 发请求
 ```py
 import requests
 
@@ -111,4 +111,56 @@ session.post('https://example.com/login', data=login_data)
 profile = session.get('https://example.com/profile')  # 已登录状态
 dashboard = session.get('https://example.com/dashboard')
 logout = session.get('https://example.com/logout')
+```
+
+
+## HTTP 服务端
+HTTPServer 是 Python 标准库中的一个模块，用于创建 HTTP 服务器。但是由于写起来较为麻烦大家都不会直接使用，而是使用第三方库来创建HTTP 服务端。比如Flask、FastAPI、Django等。目前主流是Flask，未来趋势是FastAPI。
+我们这里仍然以当前主流库Flask为例来介绍HTTP 服务端。
+
+### 快速开始
+Flask 是一个轻量级的 Python 框架，用于构建 Web 应用程序。它非常流行，因为它的学习曲线平缓，功能强大，且社区支持良好。
+
+```py
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# 基本路由
+@app.route('/')
+def home():
+    return '首页'
+
+# GET 请求带参数
+@app.route('/user/<username>')
+def show_user(username):
+    return f'用户: {username}'
+
+# GET 查询参数
+@app.route('/search')
+def search():
+    keyword = request.args.get('q', '')
+    page = request.args.get('page', '1')
+    return f'搜索: {keyword}, 第 {page} 页'
+
+# POST 请求处理
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    # 或者处理 JSON
+    # data = request.get_json()
+    return f'登录成功: {username}'
+
+# 同时处理 GET 和 POST
+@app.route('/api/data', methods=['GET', 'POST'])
+def handle_data():
+    if request.method == 'GET':
+        return jsonify({'method': 'GET', 'message': '获取数据'})
+    else:
+        data = request.get_json()
+        return jsonify({'method': 'POST', 'received': data})
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
 ```
